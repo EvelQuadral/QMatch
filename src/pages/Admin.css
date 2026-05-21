@@ -10,9 +10,27 @@
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
   padding: 24px;
   box-sizing: border-box;
+  overflow-x: hidden;
+  max-width: 100vw;
 }
 
 .admin-page * { box-sizing: border-box; }
+
+/* Table wrapper : scroll horizontal CONTAINÉ au tableau */
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 12px;
+  /* Petite ombre interne pour suggérer le scroll */
+  background:
+    linear-gradient(90deg, rgba(14,29,77,1) 0%, rgba(14,29,77,0) 4%) left center / 12px 100% no-repeat,
+    linear-gradient(270deg, rgba(14,29,77,1) 0%, rgba(14,29,77,0) 4%) right center / 12px 100% no-repeat;
+}
+
+.table-wrap .admin-table {
+  min-width: 720px; /* force le tableau à garder sa largeur, le wrap scrolle */
+}
 
 .admin-loading,
 .admin-error-box {
@@ -447,4 +465,90 @@
   text-align: center;
   padding: 60px 20px;
   color: rgba(255, 255, 255, 0.8);
+}
+
+/* ========================================================================
+   Mobile responsive
+   ======================================================================== */
+
+@media (max-width: 600px) {
+  .admin-page {
+    padding: 16px 12px;
+  }
+
+  .admin-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .admin-header h1 {
+    text-align: center;
+  }
+
+  .admin-actions {
+    justify-content: center;
+  }
+
+  .admin-actions button {
+    flex: 1;
+    min-width: 90px;
+    padding: 10px 8px;
+    font-size: 12px;
+  }
+
+  .admin-totals {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .total-card .t-num {
+    font-size: 26px;
+  }
+
+  .admin-section-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .admin-section-header select {
+    width: 100%;
+  }
+
+  .admin-table th,
+  .admin-table td {
+    padding: 8px 8px;
+    font-size: 13px;
+  }
+
+  .link-cell {
+    max-width: 160px;
+  }
+
+  .link-url {
+    display: none;
+  }
+
+  .me-page {
+    padding: 16px 12px;
+  }
+
+  .me-stats {
+    gap: 8px;
+  }
+
+  .me-stat-card {
+    padding: 14px 8px;
+  }
+
+  .me-stat-card .stat-big {
+    font-size: 28px;
+  }
+}
+
+/* Empêcher tout débordement horizontal du body global */
+html,
+body {
+  overflow-x: hidden;
+  max-width: 100vw;
 }

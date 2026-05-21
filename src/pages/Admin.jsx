@@ -315,68 +315,72 @@ function AdminDashboard({ password, onLogout }) {
             <option value="vcard_downloads">Trier par vCards</option>
           </select>
         </div>
-        <table className="admin-table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Profil</th>
-              <th>Likes</th>
-              <th>Passes</th>
-              <th>Détails</th>
-              <th>vCards</th>
-              <th>Lien /me</th>
-              <th>Actif</th>
-            </tr>
-          </thead>
-          <tbody>
-            {sortedProfiles.map((r, i) => {
-              const meUrl = r.dashboard_token ? `${baseUrl}/me/${r.dashboard_token}` : '';
-              return (
-                <tr key={r.profile_id} className={!r.active ? 'row-inactive' : ''}>
-                  <td>{i + 1}</td>
-                  <td>{r.name}</td>
-                  <td className="num">{r.likes}</td>
-                  <td className="num">{r.passes}</td>
-                  <td className="num">{r.details_views}</td>
-                  <td className="num">{r.vcard_downloads}</td>
-                  <td>
-                    {meUrl && (
-                      <div className="link-cell">
-                        <span className="link-url">{meUrl}</span>
-                        <CopyButton value={meUrl} />
-                      </div>
-                    )}
-                  </td>
-                  <td>{r.active ? '✓' : '—'}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+        <div className="table-wrap">
+          <table className="admin-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Profil</th>
+                <th>Likes</th>
+                <th>Passes</th>
+                <th>Détails</th>
+                <th>vCards</th>
+                <th>Lien /me</th>
+                <th>Actif</th>
+              </tr>
+            </thead>
+            <tbody>
+              {sortedProfiles.map((r, i) => {
+                const meUrl = r.dashboard_token ? `${baseUrl}/me/${r.dashboard_token}` : '';
+                return (
+                  <tr key={r.profile_id} className={!r.active ? 'row-inactive' : ''}>
+                    <td>{i + 1}</td>
+                    <td>{r.name}</td>
+                    <td className="num">{r.likes}</td>
+                    <td className="num">{r.passes}</td>
+                    <td className="num">{r.details_views}</td>
+                    <td className="num">{r.vcard_downloads}</td>
+                    <td>
+                      {meUrl && (
+                        <div className="link-cell">
+                          <span className="link-url">{meUrl}</span>
+                          <CopyButton value={meUrl} />
+                        </div>
+                      )}
+                    </td>
+                    <td>{r.active ? '✓' : '—'}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </section>
 
       <section>
         <h2>Pubs</h2>
-        <table className="admin-table">
-          <thead>
-            <tr>
-              <th>Nom</th>
-              <th>Likes</th>
-              <th>Clics</th>
-              <th>Actif</th>
-            </tr>
-          </thead>
-          <tbody>
-            {pubs.map((r) => (
-              <tr key={r.profile_id} className={!r.active ? 'row-inactive' : ''}>
-                <td>{r.name}</td>
-                <td className="num">{r.likes}</td>
-                <td className="num">{r.pub_clicks}</td>
-                <td>{r.active ? '✓' : '—'}</td>
+        <div className="table-wrap">
+          <table className="admin-table">
+            <thead>
+              <tr>
+                <th>Nom</th>
+                <th>Likes</th>
+                <th>Clics</th>
+                <th>Actif</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {pubs.map((r) => (
+                <tr key={r.profile_id} className={!r.active ? 'row-inactive' : ''}>
+                  <td>{r.name}</td>
+                  <td className="num">{r.likes}</td>
+                  <td className="num">{r.pub_clicks}</td>
+                  <td>{r.active ? '✓' : '—'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </section>
 
       <section className="admin-help">
