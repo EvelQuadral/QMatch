@@ -1,8 +1,8 @@
 .counter {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 7px 12px;
+  gap: 7px;
+  padding: 8px 14px;
   border-radius: var(--r-pill);
   font-family: var(--font-sans);
   font-size: 13px;
@@ -22,42 +22,55 @@
   color: var(--pink);
   background: var(--pink-28);
   border-color: var(--pink-45);
+  /* Pulse continue très subtile pour rester visible sans agresser */
+  animation: counter-soft-pulse 2.6s ease-in-out infinite;
 }
 
 .counter-active:hover {
   background: var(--pink-45);
-}
-
-.counter-num {
-  font-variant-numeric: tabular-nums;
-  min-width: 0.7em;
-  text-align: center;
+  border-color: var(--pink);
 }
 
 .counter-label {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+  font-family: var(--font-sans);
+  font-weight: 500;
+  letter-spacing: 0.005em;
+  white-space: nowrap;
 }
 
-.counter-expanded {
-  padding-right: 8px;
+.counter-chevron {
+  opacity: 0.75;
+  margin-left: -2px;
 }
 
-/* Pulse animation déclenchée à 3 matches */
-@keyframes counterPulse {
-  0% {
+/* ─── Pulse continue subtile (toujours active quand likes >= 1) ─── */
+@keyframes counter-soft-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(248, 193, 217, 0);
     transform: scale(1);
   }
   50% {
-    transform: scale(1.18);
-  }
-  100% {
-    transform: scale(1);
+    box-shadow: 0 0 0 6px rgba(248, 193, 217, 0.15);
+    transform: scale(1.02);
   }
 }
 
-.counter-pulse {
-  animation: counterPulse 600ms ease-out;
+/* ─── Bump fort à chaque nouveau like (one-shot) ─── */
+@keyframes counter-bump {
+  0% { transform: scale(1); }
+  35% { transform: scale(1.22); }
+  100% { transform: scale(1); }
+}
+
+.counter-bump {
+  animation: counter-soft-pulse 2.6s ease-in-out infinite,
+             counter-bump 380ms ease-out;
+}
+
+/* Désactiver les anims si l'utilisateur préfère moins de mouvement */
+@media (prefers-reduced-motion: reduce) {
+  .counter-active,
+  .counter-bump {
+    animation: none;
+  }
 }

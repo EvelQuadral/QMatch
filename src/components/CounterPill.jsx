@@ -4,40 +4,37 @@ import './CounterPill.css';
 
 export default function CounterPill({ count, onClick }) {
   const ref = useRef(null);
-  const prevCount = useRef(count);
+  const prev = useRef(count);
 
-  // Pulse one-shot quand on franchit le seuil 3
+  // Bump à chaque nouveau like (réaction immédiate)
   useEffect(() => {
-    if (prevCount.current < 3 && count >= 3 && ref.current) {
-      ref.current.classList.remove('counter-pulse');
-      // reflow forcé pour replay animation
-      void ref.current.offsetWidth;
-      ref.current.classList.add('counter-pulse');
+    if (prev.current !== count && prev.current !== undefined && ref.current) {
+      ref.current.classList.remove('counter-bump');
+      void ref.current.offsetWidth; // reflow
+      ref.current.classList.add('counter-bump');
     }
-    prevCount.current = count;
+    prev.current = count;
   }, [count]);
 
   const empty = count === 0;
-  const compact = count > 0 && count < 3;
-  const expanded = count >= 3;
+
+  let label;
+  if (empty) label = 'Aucun like';
+  else if (count === 1) label = 'Voir mon like';
+  else label = `Voir mes ${count} likes`;
 
   return (
     <button
       ref={ref}
       type="button"
-      className={`counter ${empty ? 'counter-empty' : 'counter-active'} ${expanded ? 'counter-expanded' : ''}`}
+      className={`counter ${empty ? 'counter-empty' : 'counter-active'}`}
       onClick={empty ? undefined : onClick}
       disabled={empty}
-      aria-label={count === 0 ? 'Aucun match' : `${count} match${count > 1 ? 's' : ''}`}
+      aria-label={empty ? 'Aucun like pour l’instant' : `Voir ${count} like${count > 1 ? 's' : ''}`}
     >
       <Heart size={14} fill={empty ? 'none' : 'currentColor'} strokeWidth={empty ? 1.5 : 2} />
-      <span className="counter-num">{count}</span>
-      {expanded && (
-        <>
-          <span className="counter-label">match{count > 1 ? 's' : ''}</span>
-          <ChevronRight size={14} />
-        </>
-      )}
+      <span className="counter-label">{label}</span>
+      {!empty && <ChevronRight size={14} className="counter-chevron" />}
     </button>
   );
 }
