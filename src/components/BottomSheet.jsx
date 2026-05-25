@@ -42,7 +42,6 @@ export default function BottomSheet({
     <>
       <div className="sheet-backdrop" onClick={onClose} />
       <div className="sheet">
-        <div className="sheet-handle" />
         <div className="sheet-header">
           <div>
             <div className="sheet-title">Tes matches</div>
