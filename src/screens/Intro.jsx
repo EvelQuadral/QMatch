@@ -3,6 +3,14 @@ import { ArrowRight } from 'lucide-react';
 import Logo from '../components/Logo';
 import './Intro.css';
 
+// ────────────────────────────────────────────────────────────
+// Contenu de la carte hero (animation intro). Modifiable ici.
+// ────────────────────────────────────────────────────────────
+const HERO_INITIALS = 'CH';
+const HERO_FLIP_STAT_NUMBER = '3,3 M€';
+const HERO_FLIP_STAT_LABEL = 'CA bloc 2024';
+// ────────────────────────────────────────────────────────────
+
 export default function Intro({ onStart }) {
   const handleStart = () => {
     if (typeof window !== 'undefined' && window.lintrk) {
@@ -29,14 +37,14 @@ export default function Intro({ onStart }) {
           <div className="hero-card hero-card-1" aria-hidden="true">
             <div className="hero-card-inner">
               <div className="hero-face hero-face-front">
-                <div className="hero-card-initials">CH</div>
+                <div className="hero-card-initials">{HERO_INITIALS}</div>
                 <div className="hero-stamp">AJOUTER</div>
                 <div className="hero-info-hint">i</div>
               </div>
               <div className="hero-face hero-face-back">
                 <div className="hero-stat-mock">
-                  <div className="hero-stat-n">3,3 M€</div>
-                  <div className="hero-stat-l">CA bloc 2024</div>
+                  <div className="hero-stat-n">{HERO_FLIP_STAT_NUMBER}</div>
+                  <div className="hero-stat-l">{HERO_FLIP_STAT_LABEL}</div>
                 </div>
               </div>
             </div>
