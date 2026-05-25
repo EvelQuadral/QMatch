@@ -1,116 +1,81 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { supabase, photoUrl } from '../lib/supabase';
-import './Admin.css';
+import Logo from '../components/Logo';
+import LiveDot from '../components/LiveDot';
+import StatCounter from '../components/StatCounter';
+import DirectorRankCard from '../components/DirectorRankCard';
+import LeaderboardRow from '../components/LeaderboardRow';
+import './Me.css';
 
-const POLL_INTERVAL = 30000; // 30 sec — backup au cas où Realtime ne match pas
-
-function rankSuffix(n) {
-  if (n === 1) return 'ᵉʳ';
-  return 'ᵉ';
-}
-
-function rankBadgeClass(rank) {
-  if (rank === 1) return 'gold';
-  if (rank === 2) return 'silver';
-  if (rank === 3) return 'bronze';
-  return '';
-}
-
-function HourlyChart({ data }) {
-  if (!data || data.length === 0) {
-    return <div className="me-chart-empty">Pas encore d'activité enregistrée.</div>;
-  }
-
-  const maxLikes = Math.max(...data.map((d) => Number(d.likes) || 0), 1);
-  const width = 100 / data.length;
-
-  return (
-    <div style={{ height: 180, position: 'relative', padding: '10px 0' }}>
-      <div
-        style={{
-          height: 140,
-          display: 'flex',
-          alignItems: 'flex-end',
-          gap: 2,
-          paddingBottom: 4,
-        }}
-      >
-        {data.map((d, i) => {
-          const likes = Number(d.likes) || 0;
-          const h = (likes / maxLikes) * 100;
-          const date = new Date(d.hour);
-          const label = `${date.getHours().toString().padStart(2, '0')}h`;
-          return (
-            <div
-              key={i}
-              style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}
-              title={`${label} — ${likes} likes`}
-            >
-              <div
-                style={{
-                  width: '100%',
-                  background: 'linear-gradient(180deg, #e4208d, #c91c7a)',
-                  height: `${h}%`,
-                  borderRadius: '4px 4px 0 0',
-                  minHeight: likes > 0 ? 4 : 0,
-                  transition: 'height 0.3s ease',
-                }}
-              />
-              <div
-                style={{
-                  fontSize: 9,
-                  color: 'rgba(255,255,255,0.5)',
-                  marginTop: 4,
-                  transform: data.length > 12 ? 'rotate(-45deg)' : 'none',
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                {label}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
+const POLL_INTERVAL = 30000;
 
 export default function Me() {
   const { token } = useParams();
-  const [stats, setStats] = useState(null);
-  const [hourly, setHourly] = useState([]);
+  const [profile, setProfile] = useState(null);
+  const [leaderboard, setLeaderboard] = useState([]);
+  const [recap, setRecap] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [liveStatus, setLiveStatus] = useState('live');
 
-  const fetchAll = async () => {
+  const fetchAll = useCallback(async () => {
     try {
-      const [{ data: s, error: e1 }, { data: h, error: e2 }] = await Promise.all([
+      const [
+        { data: stats, error: e1 },
+        { data: lb, error: e2 },
+        { data: rc, error: e3 },
+      ] = await Promise.all([
         supabase.rpc('get_profile_stats_by_token', { p_token: token }),
-        supabase.rpc('get_hourly_stats_by_token', { p_token: token }),
+        supabase.rpc('get_public_leaderboard'),
+        supabase.rpc('get_director_recap_yesterday', { p_token: token }),
       ]);
       if (e1) throw e1;
       if (e2) throw e2;
-      setStats(s && s[0] ? s[0] : null);
-      setHourly(h || []);
+      if (e3) throw e3;
+
+      const me = stats && stats[0] ? stats[0] : null;
+      const enriched = me ? { ...me, image_full_url: photoUrl(me.image_url) } : null;
+      setProfile(enriched);
+
+      const lbEnriched = (lb || []).map((r) => ({
+        ...r,
+        image_full_url: photoUrl(r.image_url),
+      }));
+      setLeaderboard(lbEnriched);
+
+      setRecap(rc && rc[0] ? rc[0] : null);
       setError('');
+      setLiveStatus('live');
     } catch (err) {
+      console.warn('Fetch /me error', err);
       setError(err.message || 'Lien invalide');
     } finally {
       setLoading(false);
     }
-  };
+  }, [token]);
 
   useEffect(() => {
     fetchAll();
+    let lastFetch = Date.now();
     const channel = supabase
-      .channel('me-stats-' + token)
+      .channel('me-' + token)
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'stats_counters' },
-        () => fetchAll()
+        () => {
+          // Debounce léger pour éviter 18 fetchs en cas de reset
+          const now = Date.now();
+          if (now - lastFetch > 800) {
+            lastFetch = now;
+            fetchAll();
+          }
+        }
       )
-      .subscribe();
+      .subscribe((status) => {
+        if (status === 'SUBSCRIBED') setLiveStatus('live');
+        else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') setLiveStatus('offline');
+      });
 
     const interval = setInterval(fetchAll, POLL_INTERVAL);
 
@@ -118,75 +83,128 @@ export default function Me() {
       supabase.removeChannel(channel);
       clearInterval(interval);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token]);
+  }, [token, fetchAll]);
 
-  const avatarUrl = useMemo(() => (stats ? photoUrl(stats.image_url) : ''), [stats]);
+  // Préparer la liste d'affichage : top 5 + ma ligne si hors top 5
+  const visibleRows = useMemo(() => {
+    if (!leaderboard.length) return [];
+    const top5 = leaderboard.slice(0, 5);
+    if (!profile) return top5;
+    const myIdInLb = leaderboard.find((r) => r.profile_id === profile.profile_id);
+    const myRank = Number(profile.rank_likes);
+    if (myRank <= 5) return top5;
+    return [...top5, { isDivider: true }, myIdInLb || profile];
+  }, [leaderboard, profile]);
+
+  const liveLabel =
+    liveStatus === 'live' ? 'EN DIRECT' : liveStatus === 'offline' ? 'DÉCONNECTÉ' : 'RECONNEXION';
 
   if (loading) {
     return (
-      <div className="me-page">
-        <div className="me-error">Chargement…</div>
+      <div className="me-page-v2">
+        <div className="me-loading">Chargement…</div>
       </div>
     );
   }
 
-  if (error || !stats) {
+  if (error || !profile) {
     return (
-      <div className="me-page">
-        <div className="me-error">
+      <div className="me-page-v2">
+        <div className="me-error-box">
           <h2>Lien invalide</h2>
-          <p>{error || 'Ce lien ne correspond à aucun profil actif.'}</p>
+          <p>{error || 'Ce lien ne correspond à aucun profil actif. Contacte PYC pour récupérer ton lien personnel.'}</p>
         </div>
       </div>
     );
   }
-
-  const rank = Number(stats.rank_likes);
-  const total = Number(stats.total_profiles);
-  const badgeClass = rankBadgeClass(rank);
 
   return (
-    <div className="me-page">
-      <div className="me-header">
-        {avatarUrl && <img src={avatarUrl} alt={stats.name} className="me-avatar" />}
-        <h1 className="me-name">{stats.name}</h1>
-        <div className={`me-rank-badge ${badgeClass}`}>
-          {rank}
-          {rankSuffix(rank)} sur {total} en likes
-        </div>
+    <div className="me-page-v2">
+      <header className="me-header-v2">
+        <Logo />
+        <LiveDot label={liveLabel} status={liveStatus} />
+      </header>
+
+      <DirectorRankCard profile={profile} leaderboard={leaderboard} />
+
+      <div className="me-stats-grid">
+        <StatCounter value={profile.likes} label="Likes" color="pink" />
+        <StatCounter value={profile.details_views} label="Détails vus" color="blue" />
+        <StatCounter value={profile.vcard_downloads} label="vCards" color="green" />
       </div>
 
-      <div className="me-stats">
-        <div className="me-stat-card">
-          <div className="stat-big">{stats.likes}</div>
-          <div className="stat-label">Likes</div>
+      <section className="me-section">
+        <div className="me-section-label">Top 5 du moment</div>
+        <div className="me-lb">
+          {visibleRows.map((row, i) => {
+            if (row.isDivider) {
+              return <div key={`d-${i}`} className="me-lb-divider">⋮</div>;
+            }
+            const isMe = row.profile_id === profile.profile_id;
+            return (
+              <LeaderboardRow
+                key={row.profile_id}
+                variant="director"
+                rank={Number(row.rank_likes)}
+                name={isMe ? 'Toi' : row.name}
+                imageUrl={row.image_full_url}
+                likes={row.likes ?? 0}
+                isMe={isMe}
+              />
+            );
+          })}
         </div>
-        <div className="me-stat-card">
-          <div className="stat-big">{stats.vcard_downloads}</div>
-          <div className="stat-label">vCards</div>
-        </div>
-        <div className="me-stat-card">
-          <div className="stat-big">{stats.details_views}</div>
-          <div className="stat-label">Détails vus</div>
-        </div>
-        <div className="me-stat-card">
-          <div className="stat-big">{stats.passes}</div>
-          <div className="stat-label">Passes</div>
-        </div>
-      </div>
+      </section>
 
-      <div className="me-chart-section">
-        <h2>Évolution horaire des likes</h2>
-        <div className="me-chart">
-          <HourlyChart data={hourly} />
-        </div>
-      </div>
+      <RecapSection recap={recap} />
 
-      <div className="me-refresh-info">
-        Mis à jour automatiquement — dernière vérification à{' '}
-        {new Date().toLocaleTimeString('fr-FR')}
-      </div>
+      <div className="me-footer">Actualisation automatique · {new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}</div>
     </div>
+  );
+}
+
+function RecapSection({ recap }) {
+  if (!recap) return null;
+  if (recap.is_first_day) {
+    return (
+      <section className="me-section">
+        <div className="me-section-label">Aujourd'hui</div>
+        <div className="me-empty-recap">
+          Le congrès commence aujourd'hui — fais-toi remarquer !
+        </div>
+      </section>
+    );
+  }
+  const noActivity = !recap.likes && !recap.details && !recap.vcards;
+  if (noActivity) {
+    return (
+      <section className="me-section">
+        <div className="me-section-label">Récap hier</div>
+        <div className="me-empty-recap">
+          Pas de match hier — c'est l'occasion de te démarquer aujourd'hui.
+        </div>
+      </section>
+    );
+  }
+  return (
+    <section className="me-section">
+      <div className="me-section-label">Récap hier</div>
+      <div className="me-recap">
+        <div className="me-recap-rank">
+          <div className="me-recap-n">#{recap.rank_yesterday}</div>
+          <div className="me-recap-l">Classement</div>
+        </div>
+        <div className="me-recap-div" />
+        <div className="me-recap-stats">
+          <div>
+            <span className="me-recap-pink">{recap.likes}</span> like{recap.likes > 1 ? 's' : ''} ·{' '}
+            <span className="me-recap-blue">{recap.details}</span> détail{recap.details > 1 ? 's' : ''} vu{recap.details > 1 ? 's' : ''}
+          </div>
+          <div>
+            <strong>{recap.vcards}</strong> vCard{recap.vcards > 1 ? 's' : ''} téléchargée{recap.vcards > 1 ? 's' : ''}
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }

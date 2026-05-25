@@ -1,0 +1,56 @@
+.live-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.live-dot {
+  display: inline-block;
+  border-radius: 50%;
+  animation: live-pulse 1.5s ease-in-out infinite;
+}
+
+.live-md .live-dot {
+  width: 7px;
+  height: 7px;
+}
+
+.live-sm .live-dot {
+  width: 6px;
+  height: 6px;
+  animation-duration: 1.6s;
+}
+
+.live-live .live-dot {
+  background: var(--green);
+  box-shadow: 0 0 8px var(--green);
+}
+
+.live-reconnecting .live-dot {
+  background: #f4a83a;
+  box-shadow: 0 0 8px #f4a83a;
+  animation-duration: 0.8s;
+}
+
+.live-offline .live-dot {
+  background: var(--red);
+  box-shadow: 0 0 8px var(--red);
+  animation: none;
+}
+
+.live-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.live-sm .live-label {
+  font-size: 9px;
+}
+
+@keyframes live-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
