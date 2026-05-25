@@ -1,4 +1,4 @@
-import React from 'react';
+iseimport React from 'react';
 import { ArrowRight } from 'lucide-react';
 import Logo from '../components/Logo';
 import './Intro.css';
@@ -59,7 +59,7 @@ export default function Intro({ onStart }) {
           ne s'inventent pas.
         </h1>
         <p className="intro-desc">
-          16 directeurs Quadral. Swipez ceux qui matchent vos besoins, repartez avec leurs contacts.
+          6 expertises Quadral. Plusieurs visiages. À vous de composer votre carnet d'adresse.
         </p>
       </div>
 
