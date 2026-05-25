@@ -15,7 +15,7 @@ export default function Intro({ onStart }) {
     <div className="intro">
       <div className="intro-header">
         <Logo />
-        <div className="intro-stamp">STAND · CONGRÈS HLM 2026</div>
+        <div className="intro-stamp">CONGRÈS HLM 2026</div>
       </div>
 
       <div className="intro-hero">
@@ -24,7 +24,7 @@ export default function Intro({ onStart }) {
             <div className="hero-card-shimmer" />
           </div>
           <div className="hero-card hero-card-2" aria-hidden="true">
-            <div className="hero-card-initials">SL</div>
+            <div className="hero-card-initials">KA</div>
           </div>
           <div className="hero-card hero-card-1" aria-hidden="true">
             <div className="hero-card-initials">CH</div>
@@ -40,7 +40,7 @@ export default function Intro({ onStart }) {
           ne s'inventent pas.
         </h1>
         <p className="intro-desc">
-          16 directeurs Quadral. Swipez ceux qui matchent vos besoins, repartez avec leurs contacts.
+          6 expertises Quadral, plusieurs visages. À vous de composer votre carnet d'adresse.
         </p>
       </div>
 
