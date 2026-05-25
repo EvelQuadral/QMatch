@@ -43,17 +43,18 @@ export function useDirectors() {
         if (res.ok) {
           const json = await res.json();
           pubs = (json.pubs || []).map((p, i) => ({
-            // ID synthétique négatif pour ne pas collisionner avec les IDs Supabase
+            // ID synthétique pour ne pas collisionner avec les IDs Supabase
             id: `pub-${i}-${p.name}`,
             type: 'pub',
             name: p.name,
-            image_url: p.image,
-            logo_url: p.logo,
+            image_url: p.image || null,
+            logo_url: p.logo || null,
             cta_url: p.url,
             cta_label: p.label || 'Voir',
             display_title: p.display_title || p.name,
-            subtitle: p.subtitle,
-            image_full_url: `/pubs/${p.image}`,
+            subtitle: p.subtitle || null,
+            description: p.description || null,
+            image_full_url: p.image ? `/pubs/${p.image}` : null,
             logo_full_url: p.logo ? `/pubs/${p.logo}` : null,
           }));
         }

@@ -1,23 +1,21 @@
 {
-  "_comment": "Liste des pubs affichées dans QMatch. Pour ajouter une pub : 1) drop l'image (et optionnellement un logo SVG) dans ce dossier, 2) ajoute une entrée ci-dessous, 3) push GitHub + deploy. Champs : name (titre interne), image (fichier de fond), logo (fichier logo overlay, optionnel), url (lien destination), label (texte du bouton, optionnel, défaut Voir), display_title (titre éditorial gros sur la carte, optionnel).",
+  "_comment": "Liste des pubs affichées dans QMatch. Pour ajouter une pub : 1) drop l'image (et optionnellement un logo SVG) dans ce dossier, 2) ajoute une entrée ci-dessous, 3) push GitHub + deploy. Champs : name (titre interne), logo (fichier logo SVG affiché en grand), image (fichier de fond optionnel), url (lien destination), label (texte du bouton, défaut Voir), subtitle (texte court sous le logo, optionnel), description (texte long sous le subtitle, optionnel).",
   "pubs": [
     {
       "name": "BRS",
-      "image": "brs.jpg",
-      "logo": "brs_logo.svg",
+      "logo": "toutsurleBRS.svg",
       "url": "https://www.toutsurlebrs.fr",
       "label": "Voir",
-      "display_title": "BRS",
-      "subtitle": "Bail Réel Solidaire"
+      "subtitle": "Bail Réel Solidaire",
+      "description": "Tout ce qu'il faut savoir sur le BRS, en un seul site."
     },
     {
       "name": "Landing",
-      "image": "landing.jpg",
-      "logo": "landing.svg",
+      "logo": "Stand_Congres.svg",
       "url": "https://congres-hlm.quadral.fr/?utm_source=AppQM&utm_medium=pub&utm_id=QMatch",
       "label": "Découvrir",
-      "display_title": "Congrès HLM 2026",
-      "subtitle": "Quadral × Congrès"
+      "subtitle": "Quadral × Congrès HLM 2026",
+      "description": "Retrouvez tout l'écosystème Quadral sur notre stand."
     }
   ]
 }

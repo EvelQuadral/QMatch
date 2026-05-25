@@ -227,6 +227,7 @@ function PubFace({ director }) {
           <div className="pub-title">{director.display_title || director.name}</div>
         )}
         {director.subtitle && <div className="pub-subtitle">{director.subtitle}</div>}
+        {director.description && <p className="pub-description">{director.description}</p>}
       </div>
       <div className="pub-footer">
         <span className="pub-brand">QUADRAL</span>

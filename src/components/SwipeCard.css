@@ -368,8 +368,8 @@
   justify-content: center;
   text-align: center;
   position: relative;
-  gap: 12px;
-  padding: 0 12px;
+  gap: 14px;
+  padding: 0 16px;
 }
 
 .pub-logo {
@@ -381,18 +381,28 @@
 .pub-title {
   font-family: var(--font-serif);
   font-style: italic;
-  font-size: 64px;
-  line-height: 1;
+  font-size: 48px;
+  line-height: 1.05;
   color: var(--navy);
 }
 
 .pub-subtitle {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--navy);
+  opacity: 0.7;
+}
+
+.pub-description {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--navy);
   opacity: 0.8;
+  max-width: 280px;
+  margin: 0 auto;
 }
 
 .pub-footer {
