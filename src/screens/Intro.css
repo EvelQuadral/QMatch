@@ -67,9 +67,85 @@
 .hero-card-1 {
   inset: 0 -4px -4px 60px;
   transform-origin: center bottom;
-  background: var(--navy-4);
+  background: transparent;
   box-shadow: var(--shadow-card);
-  animation: swipeHint 3.6s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+  perspective: 1000px;
+  animation: heroSwipeHint 6s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+.hero-card-inner {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  border-radius: var(--r-card);
+  animation: heroFlipHint 6s ease-in-out infinite;
+}
+
+.hero-face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r-card);
+  overflow: hidden;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  isolation: isolate;
+}
+
+.hero-face-front {
+  background: var(--navy-4);
+}
+
+.hero-face-back {
+  background: var(--navy-3);
+  -webkit-transform: rotateY(180deg) translateZ(0);
+  transform: rotateY(180deg) translateZ(0);
+}
+
+.hero-info-hint {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--white-12);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 12px;
+  font-weight: bold;
+  opacity: 0.85;
+}
+
+.hero-stat-mock {
+  text-align: center;
+  padding: 0 14px;
+}
+
+.hero-stat-n {
+  font-family: var(--font-sans);
+  font-size: 26px;
+  font-weight: 500;
+  color: var(--pink);
+  line-height: 1;
+}
+
+.hero-stat-l {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.65;
+  margin-top: 6px;
 }
 
 .hero-card-initials {
@@ -102,18 +178,45 @@
   transform: rotate(-12deg);
 }
 
-@keyframes swipeHint {
-  0%, 100% {
+/* Cycle complet 6s : swipe (0-45%) → idle (45-55%) → flip (55-95%) → idle */
+@keyframes heroSwipeHint {
+  0%, 5% {
     transform: rotate(9deg) translateX(0);
   }
-  35% {
+  20% {
     transform: rotate(14deg) translateX(28px);
   }
-  50% {
+  33% {
     transform: rotate(14deg) translateX(28px);
   }
-  70% {
+  45% {
     transform: rotate(7deg) translateX(-6px);
+  }
+  55%, 100% {
+    transform: rotate(9deg) translateX(0);
+  }
+}
+
+@keyframes heroFlipHint {
+  0%, 58% {
+    transform: rotateY(0deg);
+  }
+  68% {
+    transform: rotateY(180deg);
+  }
+  85% {
+    transform: rotateY(180deg);
+  }
+  95%, 100% {
+    transform: rotateY(0deg);
+  }
+}
+
+/* Respecte la préférence "reduced-motion" */
+@media (prefers-reduced-motion: reduce) {
+  .hero-card-1,
+  .hero-card-inner {
+    animation: none;
   }
 }
 
