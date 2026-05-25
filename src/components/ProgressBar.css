@@ -1,0 +1,25 @@
+.progress {
+  display: flex;
+  gap: 3px;
+  padding: 0 18px;
+  width: 100%;
+}
+
+.progress-seg {
+  flex: 1;
+  height: 3px;
+  border-radius: 2px;
+  transition: background 300ms ease;
+}
+
+.seg-pending {
+  background: var(--white-18);
+}
+
+.seg-current {
+  background: rgba(96, 166, 219, 0.6);
+}
+
+.seg-done {
+  background: var(--blue);
+}

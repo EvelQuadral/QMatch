@@ -1,0 +1,135 @@
+.fb-block {
+  background: linear-gradient(135deg, rgba(248, 193, 217, 0.08), rgba(96, 166, 219, 0.05));
+  border: 0.5px solid rgba(248, 193, 217, 0.2);
+  border-radius: 16px;
+  padding: 16px;
+  margin-top: 22px;
+}
+
+.fb-title {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 18px;
+  line-height: 1.15;
+}
+
+.fb-sub {
+  font-size: 11px;
+  opacity: 0.7;
+  margin-top: 4px;
+}
+
+.fb-stars {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.fb-star {
+  width: 32px;
+  height: 32px;
+  color: var(--white-45);
+  transition: transform 200ms ease, color 200ms ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fb-star.filled {
+  color: var(--pink);
+}
+
+.fb-star:hover:not(:disabled) {
+  transform: scale(1.1);
+}
+
+.fb-star:active {
+  transform: scale(1.2);
+}
+
+.fb-input-wrap {
+  margin-top: 14px;
+  animation: fbSlide 300ms ease-out;
+}
+
+@keyframes fbSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fb-textarea {
+  width: 100%;
+  background: rgba(14, 29, 77, 0.45);
+  border: 0.5px solid var(--white-18);
+  border-radius: var(--r-sm);
+  padding: 10px 12px;
+  min-height: 70px;
+  font-size: 12px;
+  color: white;
+  resize: none;
+  font-family: var(--font-sans);
+  line-height: 1.4;
+}
+
+.fb-textarea::placeholder {
+  color: var(--white-45);
+}
+
+.fb-textarea:focus {
+  border-color: var(--pink-45);
+}
+
+.fb-counter {
+  text-align: right;
+  font-size: 10px;
+  opacity: 0.5;
+  margin-top: 4px;
+  font-variant-numeric: tabular-nums;
+}
+
+.fb-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.fb-anon {
+  font-size: 11px;
+  opacity: 0.55;
+}
+
+.fb-send {
+  background: var(--pink);
+  color: var(--navy);
+  padding: 8px 16px;
+  border-radius: var(--r-sm);
+  font-size: 13px;
+  font-weight: 500;
+  transition: background 150ms ease, transform 150ms ease;
+}
+
+.fb-send:hover:not(:disabled) {
+  background: #ffd0e3;
+}
+
+.fb-send:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.fb-send:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.fb-error {
+  margin-top: 8px;
+  font-size: 11px;
+  color: var(--red);
+}

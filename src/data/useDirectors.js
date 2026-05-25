@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase, photoUrl } from '../lib/supabase';
 
 const shuffle = (arr) => {
@@ -11,47 +11,69 @@ const shuffle = (arr) => {
 };
 
 export function useDirectors() {
-  const [directors, setDirectors] = useState([]);
+  const [deck, setDeck] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    let cancelled = false;
-
-    async function fetchProfiles() {
-      const { data, error: err } = await supabase
+  const buildDeck = useCallback(async () => {
+    setLoading(true);
+    try {
+      // 1. Profils depuis Supabase (uniquement type='profile')
+      const { data: profiles, error: err } = await supabase
         .from('profiles')
         .select(
-          'id, type, name, title, description, email, phone, tags, stats, image_url, logo_url, cta_url, cta_label, sort_order'
+          'id, type, name, title, description, email, phone, tags, stats, image_url, sort_order'
         )
+        .eq('type', 'profile')
         .eq('active', true)
         .order('sort_order');
 
-      if (cancelled) return;
+      if (err) throw err;
 
-      if (err) {
-        setError(err.message);
-        setLoading(false);
-        return;
-      }
-
-      const withFullUrls = (data || []).map((p) => ({
+      const profilesWithUrls = (profiles || []).map((p) => ({
         ...p,
+        type: 'profile',
         image_full_url: photoUrl(p.image_url),
-        logo_full_url: photoUrl(p.logo_url),
       }));
 
-      setDirectors(shuffle(withFullUrls));
+      // 2. Pubs depuis /pubs/pubs.json (statique)
+      let pubs = [];
+      try {
+        const res = await fetch('/pubs/pubs.json');
+        if (res.ok) {
+          const json = await res.json();
+          pubs = (json.pubs || []).map((p, i) => ({
+            // ID synthétique négatif pour ne pas collisionner avec les IDs Supabase
+            id: `pub-${i}-${p.name}`,
+            type: 'pub',
+            name: p.name,
+            image_url: p.image,
+            logo_url: p.logo,
+            cta_url: p.url,
+            cta_label: p.label || 'Voir',
+            display_title: p.display_title || p.name,
+            subtitle: p.subtitle,
+            image_full_url: `/pubs/${p.image}`,
+            logo_full_url: p.logo ? `/pubs/${p.logo}` : null,
+          }));
+        }
+      } catch (e) {
+        console.warn('Impossible de charger pubs.json:', e);
+      }
+
+      const combined = shuffle([...profilesWithUrls, ...pubs]);
+      setDeck(combined);
+      setError(null);
+    } catch (err) {
+      setError(err.message || 'Erreur de chargement');
+    } finally {
       setLoading(false);
     }
-
-    fetchProfiles();
-    return () => {
-      cancelled = true;
-    };
   }, []);
 
-  const reshuffle = () => setDirectors((d) => shuffle(d));
+  useEffect(() => {
+    buildDeck();
+  }, [buildDeck]);
 
-  return { directors, loading, error, reshuffle };
+  return { deck, loading, error, reshuffle: buildDeck };
 }

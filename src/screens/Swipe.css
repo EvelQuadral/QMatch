@@ -1,0 +1,36 @@
+.swipe {
+  position: relative;
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  padding-top: max(8px, env(safe-area-inset-top));
+  overflow: hidden;
+}
+
+.swipe-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  flex-shrink: 0;
+}
+
+.swipe-progress-wrap {
+  flex-shrink: 0;
+  margin-bottom: 12px;
+  padding: 0 4px;
+}
+
+.swipe-stage {
+  flex: 1;
+  position: relative;
+  padding: 0 18px;
+  min-height: 0;
+}
+
+.card-stage-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}

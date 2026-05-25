@@ -1,0 +1,20 @@
+.tag {
+  display: inline-block;
+  background: var(--pink-18);
+  color: var(--pink);
+  border: 0.5px solid rgba(248, 193, 217, 0.5);
+  border-radius: var(--r-pill);
+  font-weight: 500;
+  white-space: nowrap;
+  line-height: 1.1;
+}
+
+.tag-sm {
+  padding: 3px 8px;
+  font-size: 10px;
+}
+
+.tag-md {
+  padding: 4px 10px;
+  font-size: 11px;
+}

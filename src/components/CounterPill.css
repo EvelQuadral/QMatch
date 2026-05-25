@@ -1,0 +1,63 @@
+.counter {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  border-radius: var(--r-pill);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  border: 0.5px solid transparent;
+  transition: background 250ms ease, opacity 250ms ease, border-color 250ms ease;
+}
+
+.counter-empty {
+  opacity: 0.4;
+  pointer-events: none;
+  color: white;
+  background: var(--white-08);
+}
+
+.counter-active {
+  color: var(--pink);
+  background: var(--pink-28);
+  border-color: var(--pink-45);
+}
+
+.counter-active:hover {
+  background: var(--pink-45);
+}
+
+.counter-num {
+  font-variant-numeric: tabular-nums;
+  min-width: 0.7em;
+  text-align: center;
+}
+
+.counter-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.counter-expanded {
+  padding-right: 8px;
+}
+
+/* Pulse animation déclenchée à 3 matches */
+@keyframes counterPulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.18);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.counter-pulse {
+  animation: counterPulse 600ms ease-out;
+}

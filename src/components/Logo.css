@@ -1,0 +1,27 @@
+.logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--blue);
+  color: var(--navy);
+  border-radius: var(--r-pill);
+  font-family: var(--font-mono);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  user-select: none;
+}
+
+.logo-sm {
+  padding: 5px 12px;
+  font-size: 10px;
+}
+
+.logo-md {
+  padding: 7px 18px;
+  font-size: 12px;
+}
+
+.logo-lg {
+  padding: 9px 22px;
+  font-size: 14px;
+}

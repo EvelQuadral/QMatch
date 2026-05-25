@@ -1,0 +1,63 @@
+/* ========================================================================
+   QMatch v2 — Design Tokens
+   Source : brief redesign 2026-05
+   ======================================================================== */
+
+:root {
+  /* Identité Quadral */
+  --navy: #0E1D4D;          /* Background principal */
+  --navy-2: #142353;        /* Surfaces secondaires (sheets, modales) */
+  --navy-3: #1f2c5e;        /* Surfaces tertiaires (face back des cartes) */
+  --navy-4: #2a3a72;        /* Surfaces quaternaires (avatars, fallback) */
+  --blue: #60A6DB;          /* Accent identité : logo, photo placeholder, pubs */
+  --pink: #F8C1D9;          /* Accent action : tags, compteur, like, CTA */
+
+  /* Signaux d'action transitoires */
+  --green: #3DD68C;         /* Stamp "AJOUTER" en swipe right */
+  --red: #E24B4A;           /* Stamp "PASSER", bouton ✕ */
+
+  /* Opacités blanches */
+  --white-04: rgba(255, 255, 255, 0.04);
+  --white-08: rgba(255, 255, 255, 0.08);
+  --white-12: rgba(255, 255, 255, 0.12);
+  --white-18: rgba(255, 255, 255, 0.18);
+  --white-28: rgba(255, 255, 255, 0.28);
+  --white-35: rgba(255, 255, 255, 0.35);
+  --white-45: rgba(255, 255, 255, 0.45);
+  --white-55: rgba(255, 255, 255, 0.55);
+  --white-65: rgba(255, 255, 255, 0.65);
+  --white-80: rgba(255, 255, 255, 0.8);
+
+  /* Tints colorées */
+  --pink-08: rgba(248, 193, 217, 0.08);
+  --pink-18: rgba(248, 193, 217, 0.18);
+  --pink-28: rgba(248, 193, 217, 0.28);
+  --pink-45: rgba(248, 193, 217, 0.45);
+
+  --blue-18: rgba(96, 166, 219, 0.18);
+  --blue-45: rgba(96, 166, 219, 0.45);
+
+  /* Typographies */
+  --font-sans: 'Roboto', system-ui, -apple-system, sans-serif;
+  --font-serif: 'DM Serif Display', Georgia, serif;
+  --font-mono: 'Space Mono', monospace;
+
+  /* Radius */
+  --r-xs: 4px;
+  --r-sm: 12px;
+  --r-md: 14px;
+  --r-card: 22px;
+  --r-modal: 24px;
+  --r-pill: 999px;
+
+  /* Ombres */
+  --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.35);
+  --shadow-cta: 0 6px 22px rgba(248, 193, 217, 0.25);
+  --shadow-modal: 0 20px 60px rgba(0, 0, 0, 0.4);
+
+  /* Timings */
+  --t-fast: 200ms;
+  --t-mid: 350ms;
+  --t-slow: 600ms;
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+}

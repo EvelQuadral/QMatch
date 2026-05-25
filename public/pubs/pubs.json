@@ -1,0 +1,23 @@
+{
+  "_comment": "Liste des pubs affichées dans QMatch. Pour ajouter une pub : 1) drop l'image (et optionnellement un logo SVG) dans ce dossier, 2) ajoute une entrée ci-dessous, 3) push GitHub + deploy. Champs : name (titre interne), image (fichier de fond), logo (fichier logo overlay, optionnel), url (lien destination), label (texte du bouton, optionnel, défaut Voir), display_title (titre éditorial gros sur la carte, optionnel).",
+  "pubs": [
+    {
+      "name": "BRS",
+      "image": "brs.jpg",
+      "logo": "brs_logo.svg",
+      "url": "https://www.toutsurlebrs.fr",
+      "label": "Voir",
+      "display_title": "BRS",
+      "subtitle": "Bail Réel Solidaire"
+    },
+    {
+      "name": "Landing",
+      "image": "landing.jpg",
+      "logo": "landing.svg",
+      "url": "https://congres-hlm.quadral.fr/?utm_source=AppQM&utm_medium=pub&utm_id=QMatch",
+      "label": "Découvrir",
+      "display_title": "Congrès HLM 2026",
+      "subtitle": "Quadral × Congrès"
+    }
+  ]
+}
