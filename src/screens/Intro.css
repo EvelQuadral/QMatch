@@ -67,10 +67,9 @@
 .hero-card-1 {
   inset: 0 -4px -4px 60px;
   transform-origin: center bottom;
-  transform: rotate(9deg);
   background: var(--navy-4);
   box-shadow: var(--shadow-card);
-  animation: heroFloat 4s ease-in-out infinite alternate;
+  animation: swipeHint 3.6s cubic-bezier(0.65, 0, 0.35, 1) infinite;
 }
 
 .hero-card-initials {
@@ -103,18 +102,24 @@
   transform: rotate(-12deg);
 }
 
-@keyframes heroFloat {
-  0% {
+@keyframes swipeHint {
+  0%, 100% {
     transform: rotate(9deg) translateX(0);
   }
-  100% {
-    transform: rotate(7deg) translateX(-4px);
+  35% {
+    transform: rotate(14deg) translateX(28px);
+  }
+  50% {
+    transform: rotate(14deg) translateX(28px);
+  }
+  70% {
+    transform: rotate(7deg) translateX(-6px);
   }
 }
 
 .intro-text {
   flex-shrink: 0;
-  text-align: left;
+  text-align: center;
   padding: 0 4px 24px;
 }
 
@@ -134,6 +139,8 @@
   line-height: 1.5;
   color: var(--white-80);
   max-width: 320px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .intro-cta-wrap {

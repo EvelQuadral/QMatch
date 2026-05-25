@@ -18,12 +18,21 @@ export default function MatchRow({ contact, onAction, onTap }) {
     onAction?.(contact);
   };
 
+  const handleRowClick = (e) => {
+    // Pour les pubs, on délègue au <a> child (qui se charge d'ouvrir l'URL nativement)
+    if (isPub) {
+      // Bypass : laissons le <a> bouton gérer
+      return;
+    }
+    onTap?.(contact);
+  };
+
   return (
-    <div className="match-row" onClick={() => onTap?.(contact)}>
+    <div className="match-row" onClick={handleRowClick}>
       <div className={`match-av ${isPub ? 'match-av-pub' : ''}`}>
         {isPub ? (
-          contact.logo_url ? (
-            <img src={contact.logo_url} alt="" />
+          contact.logo_full_url ? (
+            <img src={contact.logo_full_url} alt="" />
           ) : (
             (contact.name || '?').slice(0, 3).toUpperCase()
           )
@@ -39,14 +48,30 @@ export default function MatchRow({ contact, onAction, onTap }) {
         <div className="match-sub">{isPub ? contact.subtitle || 'Service Quadral' : contact.title}</div>
       </div>
 
-      <button
-        type="button"
-        className={`match-action ${isPub ? 'match-action-pub' : ''}`}
-        onClick={handleAction}
-        aria-label={isPub ? 'Ouvrir le lien' : 'Ajouter le contact'}
-      >
-        {isPub ? <ExternalLink size={14} /> : <UserPlus size={15} />}
-      </button>
+      {isPub ? (
+        <a
+          href={contact.cta_url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="match-action match-action-pub"
+          onClick={(e) => {
+            e.stopPropagation();
+            onAction?.(contact);
+          }}
+          aria-label={`Ouvrir ${contact.name}`}
+        >
+          <ExternalLink size={14} />
+        </a>
+      ) : (
+        <button
+          type="button"
+          className="match-action"
+          onClick={handleAction}
+          aria-label="Ajouter le contact"
+        >
+          <UserPlus size={15} />
+        </button>
+      )}
     </div>
   );
 }

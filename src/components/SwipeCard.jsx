@@ -44,7 +44,6 @@ function SwipeCardInner({
   onDetails,
   onVcard,
   isTop,
-  flyDir,
 }, ref) {
   const [flipped, setFlipped] = useState(false);
   const isPub = director?.type === 'pub';
@@ -77,14 +76,6 @@ function SwipeCardInner({
   });
 
   useImperativeHandle(ref, () => ({ flyOut }), [flyOut]);
-
-  // Déclenchement programmatique depuis parent via prop flyDir
-  useEffect(() => {
-    if (isTop && flyDir && typeof flyDir.dir === 'number') {
-      flyOut(flyDir.dir);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [flyDir?.ts, isTop]);
 
   if (!director) return null;
 

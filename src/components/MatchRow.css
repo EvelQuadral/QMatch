@@ -37,12 +37,13 @@
 }
 
 .match-av-pub {
-  background: var(--blue);
+  background: #ffffff;
   color: var(--navy);
   font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.04em;
+  border: 0.5px solid var(--blue-45);
 }
 
 .match-av-pub img {
@@ -86,6 +87,7 @@
   justify-content: center;
   flex-shrink: 0;
   transition: transform 150ms ease, background 150ms ease;
+  text-decoration: none;
 }
 
 .match-action:active {

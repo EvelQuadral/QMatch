@@ -45,18 +45,18 @@ export default function ProfileOverlay({ open, contact, cardNumber, onClose, onV
     <>
       <div className="po-backdrop" onClick={onClose} />
       <div className="po-frame" role="dialog" aria-label={`Fiche de ${contact.name}`}>
-        <div className="po-hero">
-          {contact.image_full_url ? (
-            <img src={contact.image_full_url} alt={contact.name} className="po-photo" />
-          ) : (
-            <div className="po-photo po-photo-fallback">
-              <span>{getInitials(contact.name)}</span>
-            </div>
-          )}
-          <button type="button" className="po-close" onClick={onClose} aria-label="Fermer">
-            <X size={16} />
-          </button>
-          {cardNumber && <div className="po-badge">Carte N°{String(cardNumber).padStart(2, '0')}</div>}
+        <button type="button" className="po-close" onClick={onClose} aria-label="Fermer">
+          <X size={16} />
+        </button>
+
+        <div className="po-avatar-wrap">
+          <div className="po-avatar">
+            {contact.image_full_url ? (
+              <img src={contact.image_full_url} alt={contact.name} />
+            ) : (
+              <span className="po-avatar-initials">{getInitials(contact.name)}</span>
+            )}
+          </div>
         </div>
 
         <div className="po-content">

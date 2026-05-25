@@ -1,20 +1,22 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import Logo from '../components/Logo';
 import CounterPill from '../components/CounterPill';
 import ProgressBar from '../components/ProgressBar';
 import SwipeCard from '../components/SwipeCard';
 import ActionButtons from '../components/ActionButtons';
 import BottomSheet from '../components/BottomSheet';
+import { useScrollLock } from '../hooks/useScrollLock';
 import './Swipe.css';
 
 export default function Swipe({ deck, currentIndex, likedContacts, onLike, onPass, onTrack, onFinish }) {
   const [sheetOpen, setSheetOpen] = useState(false);
   const [dragProgress, setDragProgress] = useState(0);
-  const [pendingFlyDir, setPendingFlyDir] = useState(null);
+  const topCardRef = useRef(null);
+
+  useScrollLock(true);
 
   const current = deck[currentIndex];
 
-  // Les 3 cartes visibles
   const visibleCards = [
     { item: deck[currentIndex], depth: 0 },
     { item: deck[currentIndex + 1], depth: 1 },
@@ -30,8 +32,7 @@ export default function Swipe({ deck, currentIndex, likedContacts, onLike, onPas
   );
 
   const handleProgress = useCallback((dx) => {
-    const normalized = Math.max(-1, Math.min(1, dx / 100));
-    setDragProgress(normalized);
+    setDragProgress(Math.max(-1, Math.min(1, dx / 100)));
   }, []);
 
   const handleDetails = useCallback(() => {
@@ -42,12 +43,15 @@ export default function Swipe({ deck, currentIndex, likedContacts, onLike, onPas
     if (current) onTrack?.(current.id, 'vcard');
   }, [current, onTrack]);
 
-  // Bouton ✕/❤ : utilise une flyOut programmatique
-  const handleButtonPass = () => setPendingFlyDir({ dir: -1, ts: Date.now() });
-  const handleButtonLike = () => setPendingFlyDir({ dir: 1, ts: Date.now() });
+  // Bouton ✕/❤ : appel direct sur le ref de la top card → 1 seul fly-out par click
+  const handleButtonPass = () => {
+    if (topCardRef.current?.flyOut) topCardRef.current.flyOut(-1);
+  };
+  const handleButtonLike = () => {
+    if (topCardRef.current?.flyOut) topCardRef.current.flyOut(1);
+  };
 
   if (!current) {
-    // Plus de cartes — on appelle onFinish
     onFinish?.();
     return null;
   }
@@ -65,13 +69,13 @@ export default function Swipe({ deck, currentIndex, likedContacts, onLike, onPas
 
       <div className="swipe-stage">
         <div className="card-stage-inner">
-          {/* On rend les cartes en ordre inverse (plus profonde en premier dans le DOM) */}
           {visibleCards
             .slice()
             .reverse()
             .map(({ item, depth }) => (
               <SwipeCard
                 key={item.id}
+                ref={depth === 0 ? topCardRef : null}
                 director={item}
                 depth={depth}
                 isTop={depth === 0}
@@ -81,7 +85,6 @@ export default function Swipe({ deck, currentIndex, likedContacts, onLike, onPas
                 onProgress={depth === 0 ? handleProgress : undefined}
                 onDetails={depth === 0 ? handleDetails : undefined}
                 onVcard={depth === 0 ? handleVcard : undefined}
-                flyDir={depth === 0 ? pendingFlyDir : null}
               />
             ))}
         </div>
