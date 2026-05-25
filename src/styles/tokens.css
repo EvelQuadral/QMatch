@@ -37,6 +37,11 @@
   --blue-18: rgba(96, 166, 219, 0.18);
   --blue-45: rgba(96, 166, 219, 0.45);
 
+  --green-08: rgba(61, 214, 140, 0.08);
+  --green-18: rgba(61, 214, 140, 0.18);
+  --green-28: rgba(61, 214, 140, 0.28);
+  --green-45: rgba(61, 214, 140, 0.45);
+
   /* Typographies */
   --font-sans: 'Roboto', system-ui, -apple-system, sans-serif;
   --font-serif: 'DM Serif Display', Georgia, serif;
