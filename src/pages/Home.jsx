@@ -1,9 +1,34 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, lazy, Suspense } from 'react';
 import { useDirectors } from '../data/useDirectors';
 import { useTracking } from '../hooks/useTracking';
 import Intro from '../screens/Intro';
-import Swipe from '../screens/Swipe';
-import Matches from '../screens/Matches';
+
+// Lazy-load les écrans non-critiques pour alléger le bundle initial.
+// On les pré-fetch dès le mount (cf. useEffect plus bas) pour qu'ils soient
+// disponibles instantanément au clic "Commencer".
+const Swipe = lazy(() => import('../screens/Swipe'));
+const Matches = lazy(() => import('../screens/Matches'));
+
+function PhaseLoader() {
+  return (
+    <div
+      style={{
+        minHeight: '100vh',
+        minHeight: '100dvh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: 'white',
+        fontFamily: 'var(--font-serif)',
+        fontStyle: 'italic',
+        opacity: 0.5,
+        fontSize: 18,
+      }}
+    >
+      Préparation des rencontres…
+    </div>
+  );
+}
 
 export default function Home() {
   const { deck, loading, error, reshuffle } = useDirectors();
@@ -13,7 +38,27 @@ export default function Home() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [likedContacts, setLikedContacts] = useState([]);
 
-  // Préchargement des prochaines images (N+1 et N+2)
+  // Pré-fetch les chunks Swipe + Matches dès l'arrivée sur l'app, en arrière-plan.
+  // Le visiteur lit l'intro pendant ce temps ; au clic "Commencer", tout est prêt.
+  useEffect(() => {
+    import('../screens/Swipe');
+    import('../screens/Matches');
+  }, []);
+
+  // Préchargement immédiat des 3 premières photos dès que le deck arrive
+  // (ainsi la 1ère carte affichée est instantanée au clic CTA)
+  useEffect(() => {
+    if (!deck.length) return;
+    [0, 1, 2].forEach((i) => {
+      const item = deck[i];
+      if (item?.image_full_url) {
+        const img = new Image();
+        img.src = item.image_full_url;
+      }
+    });
+  }, [deck]);
+
+  // Préchargement continu pendant le swipe (N+1, N+2)
   useEffect(() => {
     [1, 2].forEach((offset) => {
       const next = deck[currentIndex + offset];
@@ -78,17 +123,11 @@ export default function Home() {
     window.scrollTo({ top: 0, behavior: 'instant' });
   };
 
-  if (loading) {
-    return (
-      <div className="app-root" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100dvh', color: 'white' }}>
-        <span style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', opacity: 0.6 }}>Chargement…</span>
-      </div>
-    );
-  }
-
+  // ⚠️ Plus de blocage par "loading" : on rend l'Intro immédiatement.
+  // Le fetch Supabase tourne en arrière-plan pendant que l'utilisateur lit l'intro.
   if (error) {
     return (
-      <div className="app-root" style={{ padding: 40, color: 'white', textAlign: 'center' }}>
+      <div className="app-root" style={{ padding: 40, color: 'white', textAlign: 'center', minHeight: '100dvh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         Erreur de chargement : {error}
       </div>
     );
@@ -97,24 +136,34 @@ export default function Home() {
   return (
     <div className="app-root">
       {phase === 'intro' && <Intro onStart={handleStart} />}
+
       {phase === 'swipe' && (
-        <Swipe
-          deck={deck}
-          currentIndex={currentIndex}
-          likedContacts={likedContacts}
-          onLike={handleLike}
-          onPass={handlePass}
-          onTrack={handleTrack}
-          onFinish={handleFinish}
-        />
+        deck.length > 0 ? (
+          <Suspense fallback={<PhaseLoader />}>
+            <Swipe
+              deck={deck}
+              currentIndex={currentIndex}
+              likedContacts={likedContacts}
+              onLike={handleLike}
+              onPass={handlePass}
+              onTrack={handleTrack}
+              onFinish={handleFinish}
+            />
+          </Suspense>
+        ) : (
+          <PhaseLoader />
+        )
       )}
+
       {phase === 'matches' && (
-        <Matches
-          matches={likedContacts}
-          totalSeen={currentIndex + 1}
-          onRestart={handleRestart}
-          onTrack={handleTrack}
-        />
+        <Suspense fallback={<PhaseLoader />}>
+          <Matches
+            matches={likedContacts}
+            totalSeen={currentIndex + 1}
+            onRestart={handleRestart}
+            onTrack={handleTrack}
+          />
+        </Suspense>
       )}
     </div>
   );
