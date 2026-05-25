@@ -6,9 +6,9 @@ import './Intro.css';
 // ────────────────────────────────────────────────────────────
 // Contenu de la carte hero (animation intro). Modifiable ici.
 // ────────────────────────────────────────────────────────────
-const HERO_INITIALS = 'CH';
-const HERO_FLIP_STAT_NUMBER = '3,3 M€';
-const HERO_FLIP_STAT_LABEL = 'CA bloc 2024';
+const HERO_INITIALS = 'QT';
+const HERO_FLIP_STAT_NUMBER = '+2.000';
+const HERO_FLIP_STAT_LABEL = 'ventes par an';
 // ────────────────────────────────────────────────────────────
 
 export default function Intro({ onStart }) {
@@ -32,7 +32,7 @@ export default function Intro({ onStart }) {
             <div className="hero-card-shimmer" />
           </div>
           <div className="hero-card hero-card-2" aria-hidden="true">
-            <div className="hero-card-initials">SL</div>
+            <div className="hero-card-initials">QIE</div>
           </div>
           <div className="hero-card hero-card-1" aria-hidden="true">
             <div className="hero-card-inner">
