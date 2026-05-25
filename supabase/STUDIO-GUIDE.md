@@ -1,230 +1,204 @@
-# 📖 Guide Supabase Studio — QMatch
+# 📖 Guide d'administration QMatch
 
-Ce guide couvre toutes les manipulations courantes que tu auras à faire sur Supabase pour administrer QMatch sans toucher au code.
+Ce guide couvre les **3 manipulations courantes** que tu auras à faire sur QMatch sans toucher au code.
 
-## 🔑 Accès
-
-1. Connecte-toi sur [supabase.com/dashboard](https://supabase.com/dashboard)
-2. Clique sur ton projet `qmatch`
-3. Tu arrives sur le dashboard du projet
-
-Les **2 sections** que tu utiliseras :
-- **Table Editor** (icône table dans la colonne de gauche) → édition des données
-- **Storage** (icône cube) → gestion des photos
+> 📍 **Où se passent les choses ?**
+> - **Profils directeurs** → table `profiles` dans **Supabase Studio**
+> - **Photos directeurs** → fichiers WebP dans `/public/` du repo GitHub
+> - **Pubs** → fichier `/public/pubs/pubs.json` du repo GitHub + SVG logos dans `/public/pubs/`
+> - **Stats** → bouton Reset dans `/admin` de l'app
 
 ---
 
-## 📸 Photos — bucket `photos`
+## 1️⃣ AJOUTER un directeur
 
-### Ajouter une nouvelle photo
-1. **Storage → photos**
-2. Clique **Upload file**
-3. Sélectionne le JPG/PNG/SVG depuis ton ordi
-4. Le fichier apparaît dans la liste
+### Étape 1 — Préparer la photo
+1. Convertir la photo en **WebP** (recommandé) ou JPG
+   - Format : portrait, ratio ~3:4 idéal
+   - Poids : viser < 50 KB pour des téléchargements rapides en 4G de congrès
+   - Nom de fichier : sans accent, sans espace, ex : `JeanDupont.webp`
+2. Ajouter le fichier dans le dossier `public/` du repo GitHub
+   (drag-drop via web interface GitHub → "Add file" → "Upload files" dans le dossier `public/`)
 
-### Récupérer l'URL d'une photo
-1. Clique sur la ligne du fichier
-2. Bouton **Get URL** ou icône "..." → "Get URL"
-3. Copie l'URL ou juste le **filename** (ex: `ClementHennequin.jpg`)
+### Étape 2 — Créer l'entrée dans Supabase
+1. Ouvre [supabase.com/dashboard](https://supabase.com/dashboard) → ton projet `qmatch`
+2. **Table Editor** (icône table dans la colonne de gauche)
+3. Clique sur la table **`profiles`**
+4. Bouton **`+ Insert` → `Insert row`** (en haut à droite)
+5. Remplis les champs :
 
-**Important** : dans la table `profiles`, on stocke **uniquement le filename** (`ClementHennequin.jpg`), pas l'URL complète. L'app construit l'URL toute seule.
+| Champ | Valeur exemple | Note |
+|---|---|---|
+| `type` | `profile` | obligatoire |
+| `name` | `Jean DUPONT` | nom complet en majuscule au choix |
+| `title` | `Directeur du machin - Quadral` | apparaît sous le nom |
+| `description` | `Spécialiste de blabla, il vous accompagne...` | 150-300 caractères idéal |
+| `email` | `jean.dupont@quadral.fr` | utilisé pour la vCard |
+| `phone` | `06.12.34.56.78` | utilisé pour la vCard |
+| `tags` | `["Vente HLM","BRS","PSLA"]` | format **JSON array** — entre crochets, valeurs entre guillemets |
+| `stats` | `[{"number":"100","subtitle":"trucs faits"}]` | format **JSONB** — 2 à 4 entrées idéal |
+| `image_url` | `/JeanDupont.webp` | **important : avec le `/` au début** |
+| `active` | `true` | doit être true pour apparaître |
 
----
+⚠️ Laisse vides les champs `id`, `dashboard_token`, `sort_order`, `created_at`, `updated_at`, `logo_url`, `cta_url`, `cta_label` — ils sont auto-remplis ou inutiles pour un profil.
 
-## 👤 Ajouter un nouveau profil (directeur)
+6. Clique **Save**
 
-### Étape 1 : uploader sa photo
-- Storage → photos → Upload `JeanDupont.jpg`
+### Étape 3 — Récupérer le lien dashboard de la personne
+- Va sur `https://qmatch.netlify.app/admin`, login avec ton mot de passe
+- Tu verras la nouvelle ligne → bouton **"Copier"** à côté de son lien `/me/...`
+- Tu lui envoies ce lien par mail, c'est son dashboard perso
 
-### Étape 2 : créer la ligne profil
-1. **Table Editor → profiles**
-2. Bouton **+ Insert** (en haut) → **Insert row**
-3. Remplir :
+### Étape 4 — Pousser sur GitHub
+Si tu as ajouté une photo (Étape 1), elle doit être pushée sur GitHub (drag-drop dans `/public/`).
+Puis Netlify → **Trigger deploy** → **Clear cache and deploy site**.
 
-| Champ | Valeur exemple |
-|---|---|
-| `type` | `profile` |
-| `name` | `Jean DUPONT` |
-| `title` | `Directeur du machin - Quadral` |
-| `description` | `Spécialiste de blabla, il vous aide à...` |
-| `email` | `jean.dupont@quadral.fr` |
-| `phone` | `06.12.34.56.78` |
-| `tags` | `["Vente HLM","BRS","PSLA"]` (format JSON array) |
-| `stats` | `[{"number":"100","subtitle":"truc machin"}]` (JSONB) |
-| `image_url` | `JeanDupont.jpg` (juste le filename) |
-| `active` | `true` |
-
-⚠️ Les champs `id`, `dashboard_token`, `sort_order`, `created_at`, `updated_at` sont **auto-remplis**. Laisse-les vides.
-
-4. Clique **Save**
-5. ✅ Le profil apparaît dans l'app, son token et son compteur sont créés automatiquement
-
-### Étape 3 : récupérer son lien `/me/:token`
-- Soit dans Studio : Table Editor → profiles → repère la ligne du nouveau profil → colonne `dashboard_token`
-- Soit dans `/admin` : page Admin → ligne du profil → bouton "Copier"
+Si tu n'as pas ajouté de photo (juste créé un profil en base), pas besoin de redéployer.
 
 ---
 
-## 🚫 Désactiver un profil (sans perdre ses stats)
+## 2️⃣ SUPPRIMER un directeur
 
-1. Table Editor → profiles
-2. Trouve la ligne, clique dessus
+### Option A — Désactivation propre (préserve les stats historiques)
+
+1. Supabase → Table Editor → `profiles`
+2. Clique sur la ligne du directeur
 3. Mets `active` = `false`
 4. Save
 
-→ Le profil disparaît de l'app de swipe, mais ses stats historiques sont préservées dans `stats_counters` et `events`.
+→ Il disparaît de l'app, mais ses stats accumulées restent en base. **Utile si tu veux comparer plus tard.**
 
-**Pour le réactiver** : repasse `active` à `true`.
+Pour le réactiver : repasse `active` à `true`.
 
----
+### Option B — Suppression définitive
 
-## 🗑️ Supprimer définitivement un profil
-
-⚠️ Cela efface aussi ses stats. À ne faire que si tu es certain.
-
-1. Table Editor → profiles
-2. Clique sur la ligne → bouton **Delete row**
+1. Supabase → Table Editor → `profiles`
+2. Clique sur la ligne → **3 points** → **Delete row** (ou la touche Delete)
 3. Confirme
 
----
+⚠️ Cela efface **aussi** ses stats accumulées et son token. Irréversible.
 
-## 📺 Modifier une pub (BRS, Landing, etc.)
-
-1. Table Editor → profiles
-2. Filtre `type = pub` (ou cherche par nom)
-3. Modifie les champs :
-   - `name` : nom affiché dans /admin
-   - `image_url` : filename du JPG de fond (ex: `brs.jpg`)
-   - `logo_url` : filename du SVG du logo (ex: `brs_logo.svg`)
-   - `cta_url` : l'URL de destination quand on clique "Voir"
-   - `cta_label` : le texte du bouton (par défaut "Voir")
-4. Save
+→ Tu peux supprimer la photo associée du dossier `/public/` sur GitHub si tu veux faire le ménage (pas obligatoire, ça n'impacte rien).
 
 ---
 
-## ➕ Ajouter une nouvelle pub
+## 3️⃣ AJOUTER une pub
 
-1. Storage → photos : upload le fond + le logo (ex: `partenaire.jpg` + `partenaire_logo.svg`)
-2. Table Editor → profiles → Insert row :
+### Étape 1 — Préparer le logo
+1. Convertir le logo en **SVG** (idéal car vectoriel, scale parfaitement) ou PNG
+2. Nom de fichier : sans accent, sans espace, ex : `nouveauPartenaire.svg`
+3. Ajouter dans `/public/pubs/` du repo GitHub (drag-drop)
 
-| Champ | Valeur |
-|---|---|
-| `type` | `pub` |
-| `name` | `Partenaire X` |
-| `image_url` | `partenaire.jpg` |
-| `logo_url` | `partenaire_logo.svg` |
-| `cta_url` | `https://...` |
-| `cta_label` | `Découvrir` (ou laisse vide pour "Voir") |
-| `active` | `true` |
+### Étape 2 — Éditer `pubs.json`
 
-3. Save
+1. Sur GitHub, va dans `/public/pubs/pubs.json`
+2. Clique sur l'**icône crayon** (Edit this file) en haut à droite du fichier
+3. Ajoute une nouvelle entrée dans le tableau `pubs` (entre les accolades) :
 
----
-
-## 🔐 Changer le mot de passe admin
-
-1. Table Editor → **app_secrets**
-2. Trouve la ligne `key = admin_password`
-3. Clique dessus, modifie `value` (ex: `superMotDePasse123`)
-4. Save
-
-→ Au prochain login sur `/admin`, c'est ce nouveau mot de passe qu'il faudra entrer.
-
----
-
-## 🎯 Réorganiser l'ordre des profils
-
-Le champ `sort_order` détermine l'ordre initial avant que l'app shuffle aléatoirement. Si tu veux que certains profils apparaissent en début de liste plus souvent :
-
-1. Table Editor → profiles
-2. Modifie `sort_order` (entier) — plus le nombre est petit, plus c'est en début de liste
-3. Save
-
-Ex: `10, 20, 30, ...` pour préserver l'ordre saisi.
-
----
-
-## 🔄 Régénérer un token directeur (si quelqu'un a perdu son lien ou s'il a fuité)
-
-1. Table Editor → profiles
-2. Trouve la ligne
-3. Clique sur le champ `dashboard_token` et **efface la valeur** (laisse-le NULL)
-4. Save
-
-⚠️ Studio ne re-génère pas automatiquement. Pour forcer la regénération, exécute dans SQL Editor :
-
-```sql
-UPDATE profiles
-SET dashboard_token = REPLACE(
-  REPLACE(
-    REPLACE(encode(gen_random_bytes(24), 'base64'), '+', '-'),
-    '/', '_'
-  ),
-  '=', ''
-)
-WHERE name = 'Jean DUPONT';
+```json
+{
+  "name": "Nouveau Partenaire",
+  "logo": "nouveauPartenaire.svg",
+  "url": "https://lien-vers-le-site.fr",
+  "label": "Découvrir",
+  "subtitle": "Service B2B Quadral",
+  "description": "Une phrase explicative qui apparaît sur la card."
+}
 ```
 
-(remplace `Jean DUPONT` par le nom exact)
+Les champs :
+| Champ | Obligatoire ? | Détail |
+|---|---|---|
+| `name` | ✅ | Nom interne (apparaît dans /admin) |
+| `logo` | ✅ | Nom exact du fichier dans `/pubs/` |
+| `url` | ✅ | URL externe à ouvrir au clic "Voir" |
+| `label` | ❌ | Texte du bouton (défaut : "Voir") |
+| `subtitle` | ❌ | Court, sous le logo |
+| `description` | ❌ | Plus long, sous le subtitle |
+
+⚠️ **Attention syntaxe JSON** :
+- Une virgule après chaque entrée sauf la dernière
+- Toutes les valeurs entre guillemets `"..."`
+- Pas de virgule traînante après le dernier `}`
+
+4. Tout en bas, **Commit changes** → message court → **Commit**
+
+### Étape 3 — Deploy
+Netlify → **Trigger deploy** → **Clear cache and deploy site**.
 
 ---
 
-## 📊 Voir les stats brutes en SQL
+## 4️⃣ SUPPRIMER ou MODIFIER une pub
 
-Quelques requêtes utiles dans SQL Editor :
+Pareil que l'ajout, dans `pubs.json` :
 
-**Top 5 likes**
-```sql
-SELECT p.name, sc.likes
-FROM profiles p
-JOIN stats_counters sc ON sc.profile_id = p.id
-WHERE p.type = 'profile'
-ORDER BY sc.likes DESC
-LIMIT 5;
-```
+**Supprimer** : retire l'entrée complète (de `{` à `}` + la virgule éventuelle).
+**Modifier** : édite les valeurs (texte, url, etc.).
 
-**Activité par heure**
-```sql
-SELECT DATE_TRUNC('hour', created_at) AS heure,
-       COUNT(*) AS actions
-FROM events
-GROUP BY 1
-ORDER BY 1 DESC
-LIMIT 24;
-```
+Ensuite : Commit + Deploy Netlify.
 
-**Nombre de visiteurs uniques (sessions)**
-```sql
-SELECT COUNT(DISTINCT session_id) AS visiteurs
-FROM events;
-```
+Tu peux laisser le SVG logo dans `/public/pubs/` même si tu retires l'entrée — il ne sera juste plus référencé.
 
-**Top profils par taux de conversion vCard**
-```sql
-SELECT p.name,
-       sc.likes,
-       sc.vcard_downloads,
-       ROUND(100.0 * sc.vcard_downloads / NULLIF(sc.likes, 0), 1) AS taux_pct
-FROM profiles p
-JOIN stats_counters sc ON sc.profile_id = p.id
-WHERE p.type = 'profile' AND sc.likes > 0
-ORDER BY taux_pct DESC;
-```
+---
+
+## 5️⃣ RESET les compteurs (avant le congrès, après tests)
+
+⚠️ **À faire le matin du J1 du congrès**, après tous tes tests.
+
+### Procédure (30 sec)
+
+1. Va sur `https://qmatch.netlify.app/admin`
+2. Login avec ton mot de passe admin
+3. Bouton **Reset** (rouge, en haut à droite)
+4. Modal : 2 options
+   - **Reset stats seul** (défaut) → efface les compteurs visibles. **L'historique brut dans `events` est conservé**. C'est ce que tu veux 99% du temps.
+   - **Reset complet** (case à cocher "Effacer aussi l'historique brut") → efface tout, sans backup. À n'utiliser qu'**après le congrès, après export CSV final**.
+5. Tape `RESET` dans le champ pour confirmer
+6. Click **RESET stats** → un fichier CSV de snapshot des stats au moment du reset est téléchargé automatiquement → l'opération s'exécute → toast de confirmation
+
+→ Les compteurs sont à zéro, les dashboards `/me/{token}` aussi.
+
+---
+
+## 6️⃣ EXPORTER les stats (pendant et après le congrès)
+
+Depuis `/admin` :
+- **Export stats CSV** → fichier avec compteurs agrégés (likes/passes/details/vCards par profil + clics pubs)
+- **Export events CSV** → log brut horodaté : 1 ligne par action, avec timestamp, profil concerné, action, session_id anonymisé
+
+Le fichier events est précieux pour les analyses post-congrès :
+- Pics horaires de fréquentation
+- Visiteurs uniques (par `session_id`)
+- Taux de complétion (sessions qui swipent jusqu'à la fin)
+
+---
+
+## 7️⃣ CHANGER le mot de passe admin
+
+1. Supabase → Table Editor → `app_secrets`
+2. Ligne où `key = admin_password`
+3. Modifie `value` → Save
+4. Au prochain login sur `/admin`, c'est ce nouveau mot de passe qu'il faudra entrer
+
+---
+
+## 🆘 Quelque chose cloche ?
+
+| Symptôme | Cause probable | Fix |
+|---|---|---|
+| Une photo n'apparaît pas | Mauvais nom de fichier dans `image_url` (sensible à la casse) | Vérifie l'orthographe exacte vs le fichier dans `/public/` |
+| Un profil n'apparaît pas | `active = false` ou type ≠ 'profile' | Vérifie dans Studio |
+| Le compteur n'incrémente pas | RLS ou function down | Regarde la console navigateur, recharge `/admin` |
+| Une pub ne s'affiche pas | JSON invalide ou logo absent | Valide ton JSON sur [jsonlint.com](https://jsonlint.com) |
+| Le projet Supabase est "paused" | 7 jours sans activité (free tier) | Clique "Restore project" sur le dashboard, ça reprend en 30 sec |
+| Erreur réseau côté visiteur | Wi-Fi du salon défaillant | Aucune action côté code — le tracking offline est mis en file (mais imperfait) |
 
 ---
 
 ## ⚠️ À ne JAMAIS faire
 
 - ❌ Partager la clé `service_role` (Settings → API) — c'est la clé maître qui bypass toute sécurité
-- ❌ Modifier directement les valeurs dans `stats_counters` (ça créerait des incohérences avec `events`)
+- ❌ Modifier directement les valeurs dans `stats_counters` (ça crée des incohérences avec `events`)
 - ❌ Activer le partage public du projet Supabase (Settings → General → Public)
 - ❌ Re-exécuter `setup.sql` en plein congrès (ça efface tout)
-
----
-
-## 🆘 Quelque chose cloche ?
-
-- Une photo ne s'affiche pas → vérifie le filename dans `profiles.image_url` (sensible à la casse, sensible aux espaces)
-- Un profil n'apparaît pas dans l'app → vérifie `active = true`
-- Les stats ne s'incrémentent pas → ouvre `/admin` et vérifie les compteurs ; sinon vérifie la console du navigateur côté swipe
-- Le projet Supabase est passé en "paused" (après 7 jours sans activité) → clique "Restore project" sur le dashboard, ça repart en 30 sec
+- ❌ Reset complet (events compris) avant export CSV

@@ -184,7 +184,13 @@ function ProfileBack({ director, onVcardClick }) {
   return (
     <div className="back-content">
       <div className="back-id">
-        <div className="back-id-av">{getInitials(director.name)}</div>
+        <div className="back-id-av">
+          {director.image_full_url ? (
+            <img src={director.image_full_url} alt={director.name} />
+          ) : (
+            <span>{getInitials(director.name)}</span>
+          )}
+        </div>
         <div className="back-id-text">
           <div className="back-id-name">{director.name}</div>
           <div className="back-id-title">{director.title}</div>
