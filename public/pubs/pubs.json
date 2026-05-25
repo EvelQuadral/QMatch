@@ -4,17 +4,17 @@
     {
       "name": "BRS",
       "logo": "toutsurleBRS.svg",
-      "url": "https://www.toutsurlebrs.fr",
-      "label": "Voir",
-      "subtitle": "Bail Réel Solidaire",
-      "description": "Tout ce qu'il faut savoir sur le BRS, en un seul site."
+      "url": "https://www.toutsurlebrs.fr/annonceurs",
+      "label": "Voir le site",
+      "subtitle": "Diffusez vos annonces et touchez une audience en quête de logements en Bail Réel Solidaire.",
+      "description": "Tout ce qu'il faut savoir sur le BRS, en un seul site : Ciblage ultra-précis, Un site expert, 100 % dédié au BRS, Visibilité valorisante pour vos offres. OFFRE DE LANCEMENT"
     },
     {
-      "name": "Landing",
+      "name": "Nous retrouver",
       "logo": "Stand_Congres.svg",
       "url": "https://congres-hlm.quadral.fr/?utm_source=AppQM&utm_medium=pub&utm_id=QMatch",
-      "label": "Découvrir",
-      "subtitle": "Quadral × Congrès HLM 2026",
+      "label": "Venez découvrir le stand Quadral",
+      "subtitle": "Auprès des bailleurs depuis +40 ans",
       "description": "Retrouvez tout l'écosystème Quadral sur notre stand."
     }
   ]
