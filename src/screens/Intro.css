@@ -111,19 +111,40 @@
   position: absolute;
   top: 12px;
   right: 12px;
-  width: 22px;
-  height: 22px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
-  background: var(--white-12);
+  background: var(--white-18);
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: var(--font-serif);
   font-style: italic;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: bold;
-  opacity: 0.85;
+  opacity: 0.9;
+  /* Pulse synchronisée pour "popper" juste avant le flip (cycle 4s) */
+  animation: heroInfoPulse 4s ease-in-out infinite;
+}
+
+@keyframes heroInfoPulse {
+  0%, 36% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(248, 193, 217, 0);
+    background: var(--white-18);
+  }
+  44% {
+    transform: scale(1.45);
+    box-shadow: 0 0 0 8px rgba(248, 193, 217, 0.18);
+    background: var(--pink);
+    color: var(--navy);
+  }
+  52%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(248, 193, 217, 0);
+    background: var(--white-18);
+  }
 }
 
 .hero-stat-mock {
@@ -212,7 +233,8 @@
 /* Respecte la préférence "reduced-motion" */
 @media (prefers-reduced-motion: reduce) {
   .hero-card-1,
-  .hero-card-inner {
+  .hero-card-inner,
+  .hero-info-hint {
     animation: none;
   }
 }
@@ -236,11 +258,17 @@
 .intro-desc {
   margin-top: 14px;
   font-size: 13px;
-  line-height: 1.5;
+  line-height: 1.6;
   color: var(--white-80);
   max-width: 320px;
   margin-left: auto;
   margin-right: auto;
+}
+
+.intro-kw {
+  font-weight: 700;
+  color: var(--pink);
+  letter-spacing: 0.03em;
 }
 
 .intro-cta-wrap {
