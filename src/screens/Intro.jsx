@@ -59,7 +59,9 @@ export default function Intro({ onStart }) {
           ne s'inventent pas.
         </h1>
         <p className="intro-desc">
-          6 expertises Quadral, plusieurs visages. À vous de composer votre carnet d'adresses.
+          6 expertises Quadral, plusieurs visages.{' '}
+          <strong className="intro-kw">CLIC</strong> pour découvrir plus d'info et{' '}
+          <strong className="intro-kw">SWIPE</strong> pour créer votre carnet d'adresse.
         </p>
       </div>
 
