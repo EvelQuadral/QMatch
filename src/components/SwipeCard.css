@@ -94,6 +94,47 @@
   -webkit-backdrop-filter: blur(8px);
 }
 
+/* Badge "Plus d'infos" en haut à droite — affordance du tap-to-flip */
+.card-info-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 11px 6px 9px;
+  border-radius: var(--r-pill);
+  background: var(--pink);
+  color: var(--navy);
+  font-size: 12px;
+  font-weight: 600;
+  box-shadow: 0 4px 14px rgba(248, 193, 217, 0.35);
+  animation: cardInfoPulse 2.2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.card-info-badge svg {
+  flex-shrink: 0;
+}
+
+@keyframes cardInfoPulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 4px 14px rgba(248, 193, 217, 0.3), 0 0 0 0 rgba(248, 193, 217, 0);
+  }
+  50% {
+    transform: scale(1.06);
+    box-shadow: 0 4px 14px rgba(248, 193, 217, 0.4), 0 0 0 7px rgba(248, 193, 217, 0.16);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-info-badge {
+    animation: none;
+  }
+}
+
 .card-bottom {
   position: absolute;
   bottom: 0;

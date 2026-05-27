@@ -1,5 +1,5 @@
 import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
-import { UserPlus } from 'lucide-react';
+import { UserPlus, Info } from 'lucide-react';
 import Tag from './Tag';
 import { useSwipeGesture } from '../hooks/useSwipeGesture';
 import { downloadVCard } from '../lib/vcard';
@@ -166,6 +166,11 @@ function ProfileFront({ director, cardNumber, totalCards }) {
         </div>
       )}
 
+      <div className="card-info-badge">
+        <Info size={14} strokeWidth={2.4} />
+        <span>Plus d'infos</span>
+      </div>
+
       <div className="card-bottom">
         <h2 className="card-name">{director.name}</h2>
         <p className="card-title">{director.title}</p>
@@ -174,7 +179,7 @@ function ProfileFront({ director, cardNumber, totalCards }) {
             <Tag key={i}>{tag}</Tag>
           ))}
         </div>
-        <div className="card-hint">↑ TAP POUR LES DÉTAILS</div>
+        <div className="card-hint">Tapez la carte pour voir les chiffres</div>
       </div>
     </>
   );
