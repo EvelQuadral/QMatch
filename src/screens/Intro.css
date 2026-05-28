@@ -129,18 +129,18 @@
 }
 
 @keyframes heroInfoPulse {
-  0%, 36% {
+  0%, 100% {
     transform: scale(1);
     box-shadow: 0 0 0 0 rgba(248, 193, 217, 0);
     background: var(--white-18);
   }
-  44% {
+  6% {
     transform: scale(1.45);
     box-shadow: 0 0 0 8px rgba(248, 193, 217, 0.18);
     background: var(--pink);
     color: var(--navy);
   }
-  52%, 100% {
+  18% {
     transform: scale(1);
     box-shadow: 0 0 0 0 rgba(248, 193, 217, 0);
     background: var(--white-18);
@@ -199,34 +199,35 @@
   transform: rotate(-12deg);
 }
 
-/* Cycle 4s plus punchy : swipe (0-45%) → flip enchaîné direct (45-95%) */
-@keyframes heroSwipeHint {
-  0% {
-    transform: rotate(9deg) translateX(0);
+/* Cycle 4s : flip d'abord (0-45%) → idle court → swipe (55-95%) — cohérent avec
+   le sous-titre "CLIC pour découvrir, SWIPE pour créer son carnet". */
+@keyframes heroFlipHint {
+  0%, 5% {
+    transform: rotateY(0deg);
   }
   18% {
-    transform: rotate(14deg) translateX(30px);
+    transform: rotateY(180deg);
   }
-  30% {
-    transform: rotate(14deg) translateX(30px);
+  35% {
+    transform: rotateY(180deg);
   }
-  45%, 100% {
-    transform: rotate(9deg) translateX(0);
+  48%, 100% {
+    transform: rotateY(0deg);
   }
 }
 
-@keyframes heroFlipHint {
-  0%, 48% {
-    transform: rotateY(0deg);
+@keyframes heroSwipeHint {
+  0%, 55% {
+    transform: rotate(9deg) translateX(0);
   }
-  60% {
-    transform: rotateY(180deg);
+  68% {
+    transform: rotate(14deg) translateX(30px);
   }
   82% {
-    transform: rotateY(180deg);
+    transform: rotate(14deg) translateX(30px);
   }
   95%, 100% {
-    transform: rotateY(0deg);
+    transform: rotate(9deg) translateX(0);
   }
 }
 
