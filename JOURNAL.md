@@ -15,7 +15,7 @@
 |---|---|
 | **Code** | ✅ Complet, redesign v3 implémenté |
 | **Base Supabase** | ✅ En ligne, 13 profils, migrations 01→05 appliquées |
-| **Site Netlify** | ⏸️ **En pause** — mis en pause volontairement par PYC, à réactiver (le 404 vient de là) |
+| **Site Netlify** | ✅ **En ligne** — https://qmatch.netlify.app, déployé depuis `main` |
 | **Environnement local** | ✅ Node 22.23.2 installé, build validé en 1 s |
 | **Dépôt GitHub** | ✅ `EvelQuadral/QMatch`, branche `main` |
 
@@ -23,8 +23,9 @@
 
 ### Ce qui bloque encore
 
-1. **Réactiver le site Netlify** et le rebrancher sur le dépôt renommé (voir §4).
-   C'est le dernier point bloquant : le reste est fait.
+**Rien de bloquant.** La chaîne complète est opérationnelle : code poussé sur GitHub →
+build Netlify → site en ligne → base Supabase. Il reste du contenu à intégrer (liste
+définitive des directeurs) et quelques points de sécurisation avant le congrès, listés en §6.
 
 ---
 
@@ -221,7 +222,7 @@ de déploiement sont attachés au site existant et seraient perdus.
 4. *Deploys → Trigger deploy → Deploy site*
 5. Noter l'URL servie ci-dessous et la reporter dans le **QR code du stand**
 
-> **URL de production :** _à compléter_
+> **URL de production :** https://qmatch.netlify.app
 
 ⚠️ Un site Netlify en pause renvoie un **404 sec**, impossible à distinguer d'un site supprimé
 vu de l'extérieur. Avant de conclure que l'infra est morte, vérifier l'état dans le tableau de bord.
@@ -251,7 +252,8 @@ Trois options, par ordre de robustesse :
 
 - [x] ~~Installer Node.js et valider le build~~ — Node 22.23.2, build OK
 - [x] ~~Jouer `supabase/05_pub_tracking.sql`~~ — appliquée et vérifiée le 20/08
-- [ ] Réactiver le site Netlify, rebrancher le dépôt, reporter l'URL sur le QR code
+- [x] ~~Réactiver le site Netlify et rebrancher le dépôt~~ — en ligne le 20/08
+- [ ] Reporter `https://qmatch.netlify.app` sur le QR code du stand
 - [ ] Changer le mot de passe `/admin` (`quadral2026` par défaut)
 - [ ] Choisir une stratégie anti-veille Supabase (§5)
 
