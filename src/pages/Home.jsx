@@ -13,7 +13,9 @@ function PhaseLoader() {
   return (
     <div
       style={{
-        minHeight: '100vh',
+        // 100dvh et non 100vh : sur mobile, la barre d'URL fait varier la hauteur
+        // du viewport et 100vh déborde sous la barre. Un repli n'a pas de sens ici,
+        // un objet JS ne pouvant pas porter deux fois la même clé.
         minHeight: '100dvh',
         display: 'flex',
         alignItems: 'center',
