@@ -14,20 +14,17 @@
 | | Statut |
 |---|---|
 | **Code** | ✅ Complet, redesign v3 implémenté |
-| **Base Supabase** | ✅ En ligne, 13 profils, migrations 01→04 appliquées, **05 à jouer** |
-| **Site Netlify** | ❌ **Hors ligne** — `qmatch.netlify.app` renvoie 404, site à recréer |
-| **Environnement local** | ⚠️ **Node.js absent** du Mac de PYC → impossible de builder ou tester en local |
+| **Base Supabase** | ✅ En ligne, 13 profils, migrations 01→05 appliquées |
+| **Site Netlify** | ⏸️ **En pause** — mis en pause volontairement par PYC, à réactiver (le 404 vient de là) |
+| **Environnement local** | ✅ Node 22.23.2 installé, build validé en 1 s |
 | **Dépôt GitHub** | ✅ `EvelQuadral/QMatch`, branche `main` |
 
 **Échéance : congrès HLM, septembre/octobre 2026.**
 
 ### Ce qui bloque encore
 
-1. **Installer Node.js 20+** sur la machine. Sans lui, aucun `npm run dev` ni `npm run build`
-   possible : on code à l'aveugle, sans vérifier le rendu ni détecter une erreur de compilation.
-   → [nodejs.org](https://nodejs.org), version LTS.
-2. **Recréer le site Netlify** et le brancher sur le dépôt GitHub (voir §4).
-3. **Jouer la migration `supabase/05_pub_tracking.sql`** dans le SQL Editor de Supabase.
+1. **Réactiver le site Netlify** et le rebrancher sur le dépôt renommé (voir §4).
+   C'est le dernier point bloquant : le reste est fait.
 
 ---
 
@@ -48,6 +45,31 @@ les recopier depuis **Supabase → Settings → API**.
 ---
 
 ## 3. Itérations
+
+### 📅 20 août 2026 (après-midi) — Node installé, build validé, migration 05 appliquée
+
+**Node 22.23.2 LTS installé** (et non Node 20 : sorti de support en 2026). `netlify.toml` a été
+aligné sur la même version, pour que le build serveur reproduise exactement le build local.
+
+**Premier build réussi du code v3** : 1854 modules, 976 ms, bundle principal 381 Ko / 110 Ko gzip.
+Deux enseignements :
+
+- **`node_modules` était corrompu** : ses liens symboliques avaient été cassés par la
+  synchronisation OneDrive, qui ne sait pas les gérer. `vite` refusait de démarrer.
+  ⚠️ **Réflexe à avoir sur ce dossier** : si un build échoue de façon inexplicable,
+  `rm -rf node_modules && npm install` avant toute autre hypothèse.
+- Un avertissement a révélé une vraie erreur dans `PhaseLoader` : `minHeight` déclaré deux fois.
+  En CSS c'est un repli valable, dans un objet JS la seconde clé écrase la première — le repli
+  `100vh` n'a jamais servi. Corrigé.
+
+**Migration `05_pub_tracking.sql` appliquée** sur Supabase, RPC `increment_pub_stat` et
+`admin_get_pub_stats` vérifiées présentes et fonctionnelles.
+
+**Vérification visuelle** (première depuis le redesign) : écran d'accueil conforme, animation
+des cartes fluide, aucune erreur en console (seulement deux avertissements React Router v7,
+sans conséquence), les deux pubs se chargent avec les bonnes clés de stats `BRS` et `Landing`.
+
+---
 
 ### 📅 20 août 2026 (fin de journée) — Mise en ligne sur GitHub
 
@@ -83,7 +105,9 @@ dépôt git local dans un état trompeur, dette technique accumulée pendant le 
 #### Diagnostic
 
 - Le projet Supabase avait été **mis en veille** par inactivité (réactivé par PYC le 20/08).
-- Le site Netlify `qmatch.netlify.app` **n'existe plus** (HTTP 404).
+- Le site Netlify répondait 404 : diagnostiqué à tort comme supprimé, il était en réalité
+  **mis en pause** volontairement par PYC. Un site Netlify en pause renvoie un 404 sec,
+  indiscernable d'un site supprimé vu de l'extérieur — ne pas retomber dans le piège.
 - **Node.js n'est pas installé** sur le Mac : ni `node`, ni `npm`, ni Homebrew.
 - Le dépôt git local était **orphelin** : la branche `main` locale pointait sur une vieille
   histoire issue de Replit, **sans aucun ancêtre commun** avec `origin/main`. Résultat :
@@ -183,16 +207,24 @@ en fichier `pubs.json`, réduction de 16 à 13 directeurs.
 
 ## 4. Remettre le site en ligne (Netlify)
 
-1. Netlify → **Add new site → Import an existing project → GitHub** → dépôt `EvelQuadral/QMatch`
-2. Les réglages de build sont détectés automatiquement via `netlify.toml`
-   (commande `npm run build`, dossier publié `dist`)
-3. **Site settings → Environment variables** → ajouter `VITE_SUPABASE_URL` et
-   `VITE_SUPABASE_ANON_KEY` (mêmes valeurs que `.env.local`)
-4. **Deploy**
-5. Noter la nouvelle URL ici et la reporter dans le **QR code du stand**
+**Le site Netlify existe toujours** — il a été mis en pause volontairement. Il ne faut donc
+**pas** en créer un nouveau : les variables d'environnement, le nom de domaine et l'historique
+de déploiement sont attachés au site existant et seraient perdus.
 
-⚠️ L'ancienne URL `qmatch.netlify.app` est perdue. Si elle a déjà été imprimée quelque part,
-il faut soit récupérer ce nom de sous-domaine (s'il est encore libre), soit refaire les supports.
+1. **Réactiver le site** (le bouton de reprise s'affiche sur le tableau de bord du site en pause)
+2. **Rebrancher le dépôt**, renommé entre-temps :
+   *Site configuration → Build & deploy → Continuous deployment → Manage repository* →
+   choisir `EvelQuadral/QMatch`. Netlify redemandera d'autoriser son application GitHub,
+   l'ancienne autorisation ne correspondant plus au compte renommé.
+3. **Vérifier les variables d'environnement** (elles devraient déjà être là) :
+   `VITE_SUPABASE_URL` et `VITE_SUPABASE_ANON_KEY`, identiques à `.env.local`
+4. *Deploys → Trigger deploy → Deploy site*
+5. Noter l'URL servie ci-dessous et la reporter dans le **QR code du stand**
+
+> **URL de production :** _à compléter_
+
+⚠️ Un site Netlify en pause renvoie un **404 sec**, impossible à distinguer d'un site supprimé
+vu de l'extérieur. Avant de conclure que l'infra est morte, vérifier l'état dans le tableau de bord.
 
 ---
 
@@ -217,9 +249,9 @@ Trois options, par ordre de robustesse :
 
 **Bloquants avant le congrès**
 
-- [ ] Installer Node.js 20+ et lancer `npm run build` pour valider le code de l'itération du 20/08
-- [ ] Jouer `supabase/05_pub_tracking.sql` dans le SQL Editor
-- [ ] Recréer le site Netlify et reporter l'URL sur le QR code
+- [x] ~~Installer Node.js et valider le build~~ — Node 22.23.2, build OK
+- [x] ~~Jouer `supabase/05_pub_tracking.sql`~~ — appliquée et vérifiée le 20/08
+- [ ] Réactiver le site Netlify, rebrancher le dépôt, reporter l'URL sur le QR code
 - [ ] Changer le mot de passe `/admin` (`quadral2026` par défaut)
 - [ ] Choisir une stratégie anti-veille Supabase (§5)
 
