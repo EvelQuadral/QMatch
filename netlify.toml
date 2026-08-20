@@ -3,7 +3,10 @@
   publish = "dist"
 
 [build.environment]
-  NODE_VERSION = "20"
+  # Aligné sur la version installée en local (Node 22 LTS « Jod »), pour que le
+  # build Netlify soit identique à celui qu'on valide sur le poste. Node 20 est
+  # sorti de support en 2026 : ne pas y revenir.
+  NODE_VERSION = "22"
 
 # SPA routing : toutes les routes renvoient sur index.html
 [[redirects]]
