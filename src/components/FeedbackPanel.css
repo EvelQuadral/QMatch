@@ -1,0 +1,232 @@
+/* ========================================================================
+   FeedbackPanel — section « Retours visiteurs » du dashboard admin
+   ======================================================================== */
+
+.fbp {
+  background: var(--white-04);
+  border: 1px solid var(--white-08);
+  border-radius: var(--r-sm);
+  overflow: hidden;
+}
+
+/* ─── Résumé : note moyenne + répartition ───────────────────────────── */
+
+.fbp-summary {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 16px;
+  align-items: center;
+  padding: 14px;
+}
+
+.fbp-score {
+  text-align: center;
+  min-width: 66px;
+}
+
+.fbp-score-n {
+  font-family: var(--font-serif);
+  font-size: 30px;
+  line-height: 1;
+  color: var(--pink);
+}
+
+.fbp-score-stars {
+  display: flex;
+  justify-content: center;
+  gap: 1px;
+  color: var(--pink);
+  margin-top: 5px;
+}
+
+.fbp-score-total {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.04em;
+  opacity: 0.5;
+  margin-top: 5px;
+  white-space: nowrap;
+}
+
+.fbp-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.fbp-bar-row {
+  display: grid;
+  grid-template-columns: 10px 1fr 26px;
+  align-items: center;
+  gap: 7px;
+}
+
+.fbp-bar-label {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  opacity: 0.45;
+  text-align: right;
+}
+
+.fbp-bar-track {
+  height: 5px;
+  border-radius: var(--r-pill);
+  background: var(--white-08);
+  overflow: hidden;
+}
+
+.fbp-bar-fill {
+  height: 100%;
+  border-radius: var(--r-pill);
+  background: var(--pink);
+  opacity: 0.75;
+  transition: width var(--t-mid) var(--ease);
+}
+
+.fbp-bar-count {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  opacity: 0.55;
+}
+
+/* ─── Barre d'actions ───────────────────────────────────────────────── */
+
+.fbp-actions {
+  display: flex;
+  border-top: 1px solid var(--white-08);
+}
+
+.fbp-toggle {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px;
+  background: none;
+  border: none;
+  color: inherit;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.6;
+  cursor: pointer;
+  transition: opacity var(--t-fast) var(--ease), background var(--t-fast) var(--ease);
+}
+
+.fbp-toggle:hover:not(:disabled) {
+  opacity: 1;
+  background: var(--white-04);
+}
+
+.fbp-toggle:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.fbp-chev {
+  transition: transform var(--t-fast) var(--ease);
+}
+
+.fbp-chev.open {
+  transform: rotate(180deg);
+}
+
+.fbp-export {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  padding: 10px;
+  background: none;
+  border: none;
+  border-left: 1px solid var(--white-08);
+  color: inherit;
+  opacity: 0.55;
+  cursor: pointer;
+  transition: opacity var(--t-fast) var(--ease), background var(--t-fast) var(--ease);
+}
+
+.fbp-export:hover {
+  opacity: 1;
+  background: var(--white-04);
+}
+
+/* ─── Liste des commentaires ────────────────────────────────────────── */
+
+.fbp-list {
+  border-top: 1px solid var(--white-08);
+  max-height: 340px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.fbp-item {
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--white-04);
+}
+
+.fbp-item:last-child {
+  border-bottom: none;
+}
+
+.fbp-item-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 5px;
+}
+
+.fbp-item-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 6px;
+  border-radius: var(--r-pill);
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 700;
+  background: var(--white-08);
+}
+
+/* Vert pour 4-5, neutre pour 3, rouge pour 1-2 : repérage immédiat des
+   retours négatifs dans une liste longue. */
+.fbp-item-rating.r5,
+.fbp-item-rating.r4 {
+  background: var(--green-18);
+  color: var(--green);
+}
+
+.fbp-item-rating.r3 {
+  background: var(--white-12);
+  color: var(--white-80);
+}
+
+.fbp-item-rating.r2,
+.fbp-item-rating.r1 {
+  background: rgba(226, 75, 74, 0.18);
+  color: var(--red);
+}
+
+.fbp-item-date {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  opacity: 0.4;
+}
+
+.fbp-item-text {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.45;
+  opacity: 0.85;
+  overflow-wrap: anywhere;
+}
+
+.fbp-empty {
+  padding: 18px 14px;
+  text-align: center;
+  font-size: 12px;
+  opacity: 0.45;
+}

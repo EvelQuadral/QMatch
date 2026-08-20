@@ -1,0 +1,126 @@
+/* ========================================================================
+   PubStatsPanel — section « Pubs » du dashboard admin
+   ======================================================================== */
+
+.pubs-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pub-stat-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--white-04);
+  border: 1px solid var(--white-08);
+  border-radius: var(--r-sm);
+}
+
+/* ─── Identité de la pub ────────────────────────────────────────────── */
+
+.pub-stat-id {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.pub-stat-logo {
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r-xs);
+  background: var(--blue-18);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--blue);
+  overflow: hidden;
+}
+
+.pub-stat-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 4px;
+}
+
+.pub-stat-name {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.pub-stat-name > span:first-child {
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pub-stat-views {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  opacity: 0.45;
+}
+
+.pub-stat-orphan {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--red);
+  opacity: 0.75;
+}
+
+/* ─── Métriques ─────────────────────────────────────────────────────── */
+
+.pub-stat-metrics {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.pub-stat-metric {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  opacity: 0.55;
+}
+
+.pub-stat-metric.pink {
+  color: var(--pink);
+  opacity: 1;
+}
+
+.pub-stat-metric.green {
+  color: var(--green);
+  opacity: 1;
+}
+
+.pub-stat-metric em {
+  font-style: normal;
+  font-size: 9.5px;
+  font-weight: 400;
+  opacity: 0.65;
+}
+
+.pubs-empty {
+  padding: 16px;
+  text-align: center;
+  font-size: 12px;
+  opacity: 0.45;
+  background: var(--white-04);
+  border: 1px solid var(--white-08);
+  border-radius: var(--r-sm);
+}

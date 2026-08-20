@@ -92,9 +92,10 @@ export default function Home() {
   const handlePass = useCallback(
     (item) => {
       if (!item) return;
-      if (item.type === 'profile') {
-        track(item.id, 'pass');
-      }
+      // Profils comme pubs sont trackés : useTracking() aiguille vers la bonne
+      // RPC selon l'id. Savoir qu'une pub est systématiquement passée est une
+      // information utile pour l'arbitrage des visuels.
+      track(item.id, 'pass');
       advance();
     },
     [advance, track]

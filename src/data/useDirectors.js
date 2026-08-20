@@ -42,9 +42,14 @@ export function useDirectors() {
         const res = await fetch('/pubs/pubs.json');
         if (res.ok) {
           const json = await res.json();
-          pubs = (json.pubs || []).map((p, i) => ({
-            // ID synthétique pour ne pas collisionner avec les IDs Supabase
-            id: `pub-${i}-${p.name}`,
+          pubs = (json.pubs || []).map((p) => ({
+            // ID synthétique préfixé "pub:" pour ne pas collisionner avec les
+            // IDs Supabase (des BIGINT). Le préfixe sert aussi d'aiguillage
+            // dans useTracking() vers la RPC increment_pub_stat.
+            // La clé vient de pubs.json (`key`, sinon `name`) et NON de l'index :
+            // réordonner les pubs dans le fichier ne casse pas l'historique de stats.
+            id: `pub:${p.key || p.name}`,
+            pub_key: p.key || p.name,
             type: 'pub',
             name: p.name,
             image_url: p.image || null,

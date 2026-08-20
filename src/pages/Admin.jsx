@@ -8,6 +8,8 @@ import StatCounter from '../components/StatCounter';
 import LeaderboardRow from '../components/LeaderboardRow';
 import ConfirmModal from '../components/ConfirmModal';
 import Toast from '../components/Toast';
+import FeedbackPanel from '../components/FeedbackPanel';
+import PubStatsPanel from '../components/PubStatsPanel';
 import './Admin.css';
 
 function downloadCSV(filename, rows, columns) {
@@ -112,6 +114,8 @@ function AdminDashboard({ password, onLogout }) {
   const [leaderboard, setLeaderboard] = useState([]);
   const [kpis, setKpis] = useState(null);
   const [rawRows, setRawRows] = useState([]); // pour exports
+  const [feedbackStats, setFeedbackStats] = useState(null);
+  const [pubStats, setPubStats] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [liveStatus, setLiveStatus] = useState('live');
@@ -158,6 +162,24 @@ function AdminDashboard({ password, onLogout }) {
     } finally {
       setLoading(false);
     }
+
+    // Sections secondaires : volontairement hors du Promise.all ci-dessus.
+    // Si une migration SQL n'a pas encore été jouée sur l'instance Supabase,
+    // la RPC manquante ne doit pas faire tomber tout le dashboard — la section
+    // concernée reste simplement vide.
+    supabase
+      .rpc('admin_get_feedback_stats', { p_password: password })
+      .then(({ data, error: e }) => {
+        if (!e) setFeedbackStats(data && data[0] ? data[0] : null);
+      })
+      .catch(() => {});
+
+    supabase
+      .rpc('admin_get_pub_stats', { p_password: password })
+      .then(({ data, error: e }) => {
+        if (!e) setPubStats(data || []);
+      })
+      .catch(() => {});
   }, [password]);
 
   useEffect(() => {
@@ -241,6 +263,21 @@ function AdminDashboard({ password, onLogout }) {
     } catch (err) {
       setToast({ message: 'Erreur export events', type: 'error' });
     }
+  };
+
+  // Appelé par FeedbackPanel, qui a déjà chargé les lignes via admin_export_feedback
+  const exportFeedbackCSV = (data) => {
+    downloadCSV(
+      `qmatch-feedback-${tsForFilename()}.csv`,
+      data,
+      [
+        { key: 'created_at', label: 'Date/heure' },
+        { key: 'rating', label: 'Note' },
+        { key: 'comment', label: 'Commentaire' },
+        { key: 'session_id', label: 'Session' },
+      ]
+    );
+    setToast({ message: `Export Feedback (${data.length} avis)`, type: 'success' });
   };
 
   const handleReset = async () => {
@@ -353,6 +390,23 @@ function AdminDashboard({ password, onLogout }) {
             </button>
           )}
         </div>
+      </section>
+
+      {/* Pubs */}
+      <section>
+        <div className="adm-section-label">Pubs</div>
+        <PubStatsPanel stats={pubStats} />
+      </section>
+
+      {/* Retours visiteurs */}
+      <section>
+        <div className="adm-section-label">Retours visiteurs</div>
+        <FeedbackPanel
+          stats={feedbackStats}
+          password={password}
+          onToast={setToast}
+          onExport={exportFeedbackCSV}
+        />
       </section>
 
       {/* Actions */}

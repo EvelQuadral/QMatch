@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+stats.json
+
+# Env — .env.example est versionné comme modèle, les vraies clés ne le sont jamais
+.env
+.env.local
+.env.*.local
+*.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# Éditeurs / OS
+.DS_Store
+.vscode/
+.idea/
+*.swp
+
+# Outillage Claude
+.claude/

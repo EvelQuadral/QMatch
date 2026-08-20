@@ -115,6 +115,18 @@ Les champs :
 | `label` | ❌ | Texte du bouton (défaut : "Voir") |
 | `subtitle` | ❌ | Court, sous le logo |
 | `description` | ❌ | Plus long, sous le subtitle |
+| `key` | ❌ | Identifiant des statistiques (défaut : `name`) — voir encadré |
+
+> 📊 **Comment les stats d'une pub sont rattachées**
+>
+> Les compteurs d'une pub sont indexés sur sa clé : le champ `key` s'il existe, sinon `name`.
+> Aucune déclaration en base n'est nécessaire — la ligne de compteur se crée toute seule
+> au premier like, pass ou clic.
+>
+> Conséquence : **renommer `name` fait repartir les stats de cette pub à zéro**, l'ancien
+> historique restant visible dans `/admin` sous l'ancien nom, signalé « retirée de pubs.json ».
+> Si tu prévois de retoucher le nom affiché, fixe un `key` stable dès le départ
+> (ex. `"key": "brs"`) : tu pourras alors changer `name` librement sans perdre l'historique.
 
 ⚠️ **Attention syntaxe JSON** :
 - Une virgule après chaque entrée sauf la dernière
@@ -138,6 +150,12 @@ Pareil que l'ajout, dans `pubs.json` :
 Ensuite : Commit + Deploy Netlify.
 
 Tu peux laisser le SVG logo dans `/public/pubs/` même si tu retires l'entrée — il ne sera juste plus référencé.
+
+ℹ️ **Réordonner les pubs dans le fichier est sans risque** : les statistiques sont rattachées
+au nom (ou au `key`), pas à la position dans la liste.
+
+ℹ️ **Une pub supprimée garde ses stats** : sa ligne reste visible dans la section « Pubs »
+de `/admin`, marquée « retirée de pubs.json ». Rien n'est perdu pour le bilan post-congrès.
 
 ---
 
@@ -163,13 +181,25 @@ Tu peux laisser le SVG logo dans `/public/pubs/` même si tu retires l'entrée �
 ## 6️⃣ EXPORTER les stats (pendant et après le congrès)
 
 Depuis `/admin` :
-- **Export stats CSV** → fichier avec compteurs agrégés (likes/passes/details/vCards par profil + clics pubs)
-- **Export events CSV** → log brut horodaté : 1 ligne par action, avec timestamp, profil concerné, action, session_id anonymisé
+- **Export stats CSV** → compteurs agrégés (likes/passes/details/vCards par profil)
+- **Export events CSV** → log brut horodaté : 1 ligne par action, avec timestamp, profil ou pub
+  concerné, action, session_id anonymisé. Les lignes de pub sont préfixées `[pub]`.
+- **Export feedback CSV** (icône ⬇ dans la section « Retours visiteurs ») → date, note sur 5,
+  commentaire, session
 
 Le fichier events est précieux pour les analyses post-congrès :
 - Pics horaires de fréquentation
 - Visiteurs uniques (par `session_id`)
 - Taux de complétion (sessions qui swipent jusqu'à la fin)
+
+### Ce que `/admin` affiche en direct
+
+| Section | Contenu |
+|---|---|
+| Totaux congrès | Visiteurs uniques, likes, détails vus, vCards |
+| Leaderboard directeurs | Classement par likes + lien `/me` copiable pour chacun |
+| Pubs | Likes, pass, clics et taux de clic par pub |
+| Retours visiteurs | Note moyenne, répartition 1→5, commentaires dépliables |
 
 ---
 
