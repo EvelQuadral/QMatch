@@ -48,7 +48,7 @@ S'il est absent : [nodejs.org](https://nodejs.org) → installer la version LTS.
 ### 2. Récupérer le code
 
 ```bash
-git clone https://github.com/MKT-EvelQuadral/QMatch.git
+git clone https://github.com/EvelQuadral/QMatch.git
 cd QMatch
 npm install
 ```

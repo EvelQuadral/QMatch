@@ -17,7 +17,7 @@
 | **Base Supabase** | ✅ En ligne, 13 profils, migrations 01→04 appliquées, **05 à jouer** |
 | **Site Netlify** | ❌ **Hors ligne** — `qmatch.netlify.app` renvoie 404, site à recréer |
 | **Environnement local** | ⚠️ **Node.js absent** du Mac de PYC → impossible de builder ou tester en local |
-| **Dépôt GitHub** | ✅ `MKT-EvelQuadral/QMatch`, branche `main` |
+| **Dépôt GitHub** | ✅ `EvelQuadral/QMatch`, branche `main` |
 
 **Échéance : congrès HLM, septembre/octobre 2026.**
 
@@ -35,7 +35,7 @@
 
 | Ressource | Où |
 |---|---|
-| Dépôt | https://github.com/MKT-EvelQuadral/QMatch |
+| Dépôt | https://github.com/EvelQuadral/QMatch |
 | Supabase | https://supabase.com/dashboard → projet QMatch |
 | Identifiant projet Supabase | `gmzagoosptphsuxohgjd` |
 | Mot de passe `/admin` | `quadral2026` (par défaut — **à changer avant le congrès**) |
@@ -48,6 +48,32 @@ les recopier depuis **Supabase → Settings → API**.
 ---
 
 ## 3. Itérations
+
+### 📅 20 août 2026 (fin de journée) — Mise en ligne sur GitHub
+
+Premier `git push` réussi depuis le Mac de PYC. Le dépôt distant était resté au 28 mai.
+
+**Le compte GitHub avait été renommé** : `MKT-EvelQuadral` → `EvelQuadral`. GitHub suit
+la redirection en **lecture** (les `git fetch` passaient sans rien signaler) mais la refuse en
+**écriture** : le push renvoyait un 403 qui ressemblait à tort à un problème de droits.
+`git remote set-url` a réglé le cas. Toutes les URL de la documentation ont été corrigées.
+
+Autres points rencontrés, notés ici parce qu'ils reviendront :
+
+- La branche `main` n'avait pas de branche amont après le repointage du matin
+  (`git branch --set-upstream-to=origin/main main`).
+- Le jeton d'accès GitHub était de type *fine-grained* et n'avait **aucune permission**
+  (`Repositories: 0`). Il faut y ajouter **Contents: Read and write** pour pouvoir pousser.
+  ⚠️ Ce jeton **expire le 19 septembre 2026**, soit potentiellement pendant le congrès.
+  À prolonger avant l'événement si un correctif doit être poussé sur place.
+- `credential.helper osxkeychain` a été activé : l'authentification n'est à refaire qu'une fois.
+
+**Audit du dépôt après push** — rien à nettoyer côté GitHub :
+une seule branche (`main`), 13 photos correspondant exactement aux 13 profils actifs en base,
+aucun asset orphelin, aucun fichier référencé manquant, aucun secret versionné
+(`.env.example` ne contient que des placeholders, `.env.local` est ignoré).
+
+---
 
 ### 📅 20 août 2026 — Reprise après 3 mois d'interruption
 
@@ -157,7 +183,7 @@ en fichier `pubs.json`, réduction de 16 à 13 directeurs.
 
 ## 4. Remettre le site en ligne (Netlify)
 
-1. Netlify → **Add new site → Import an existing project → GitHub** → dépôt `MKT-EvelQuadral/QMatch`
+1. Netlify → **Add new site → Import an existing project → GitHub** → dépôt `EvelQuadral/QMatch`
 2. Les réglages de build sont détectés automatiquement via `netlify.toml`
    (commande `npm run build`, dossier publié `dist`)
 3. **Site settings → Environment variables** → ajouter `VITE_SUPABASE_URL` et

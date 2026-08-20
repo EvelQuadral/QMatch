@@ -250,7 +250,7 @@ Idéalement (à adapter selon outil utilisé) :
 
 ## 13. Ce que je (le développeur) m'engage à fournir
 
-- Le code React + CSS actuel sur demande (le repo est sur GitHub : `MKT-EvelQuadral/QMatch`)
+- Le code React + CSS actuel sur demande (le repo est sur GitHub : `EvelQuadral/QMatch`)
 - Une URL Netlify de prévisualisation pour voir l'app fonctionner avant de redesigner
 - Une session de Q/R technique si tu as un doute sur ce qui est faisable
 - L'implémentation finale dans le code, à partir de tes maquettes
